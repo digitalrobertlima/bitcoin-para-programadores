@@ -78,6 +78,8 @@ Há mais de um método matemático para alcançar este tipo de funcionalidade e 
 
 Este tipo de assinatura é o que permite que todos na rede possam comprovar que uma transação foi enviada pelo detentor de uma certa chave privada - que nada mais é que um número gigante de 256 *bits* obtido, se feito corretamente, de forma criptograficamente aleatória - sendo, assim, essencial para o funcionamento correto do Bitcoin.
 
+Por exemplo, digamos que Maria envia 1 bitcoin para o endereço bitcoin de João e João, por sua vez, envia 1 bitcoin para o endereço de Raphael. Todas estas transações são apenas mensagens que dizem "passar *n* bitcoins de *x* para *y*" e todas estas mensagens precisam ser assinadas por quem a rede considera o atual detentor dos bitcoins para que sejam consideradas válidas e incluidas na blockchain por algum minerador.
+
 Em [Endereços](enderecos.md), veremos como a chave privada pode ser gerada e como fazemos para derivar a chave pública a partir da chave privada para, finalmente, gerar um endereço Bitcoin. Em [Transações](transacoes.md) veremos como as assinaturas são realmente enxergadas na rede e como assinar transações utilizando os comandos RPC do Bitcoin Core e implementaremos um código Python com o mesmo intuito. E, para caso você queira se aprofundar mais nas abstrações matemáticas que dão à luz esta tecnologia amplamente utilizada atualmente, recomendo: [links list placeholder]
 
 Próximo capítulo: [Bitcoin Core](bitcoin-core.md)
