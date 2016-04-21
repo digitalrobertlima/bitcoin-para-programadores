@@ -1,6 +1,7 @@
 # Sumário
 
 * [Introdução](intro.md)
+* [Bitcoin Core](bitcoin-core.md)
 * [Transações](transacoes.md)
 * [Blockchain](blockchain.md)
 * [Endereços](enderecos.md)
