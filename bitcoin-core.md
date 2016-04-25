@@ -462,4 +462,48 @@ $ bitcoin-cli dumpwallet wallet.txt
 
 E você terá um arquivo .txt com o *dump* da carteira inteira.
 
+#### Acessando Endereços e Recebendo Transações
 
+O seu *software* cliente gera endereços automaticamente e os mantém em uma *pool* de endereços. O atributo *keypoolsize* que indica quantos endereços públicos já gerados a sua carteira tem pode ser obtido com *getinfo*. Para pegar um desses endereços, você simplemente usa o comando ```getnewaddress```:
+
+```
+$ bitcoin-cli getnewaddress
+1Na1RLT5S8c78MAXGCfD6FKiCeHZaJndLo
+```
+
+Envie alguns *millibits* para o endereço que você acabou de pegar na linha de comando para você poder ver como checar a quantia recebida por endereço. No meu caso, vou enviar 10 *millibits* (0.010 bitcoins) para o endereço.
+
+Após enviar, você pode checar o valor recebido com o comando ```getreceivedbyaddress```, porém, por padrão, ele precisa de alguns números de confirmação antes de mostrar a quantia - você pode configurar isso no arquivo bitcoin.conf; para que mostre a quantia recebida mesmo sem confirmação, chamaremos este comando com o parâmetro de confirmações mínimas como 0;
+
+```
+$ bitcoin-cli getreceivedbyaddress 1Na1RLT5S8c78MAXGCfD6FKiCeHZaJndLo 0
+0.01000000
+```
+
+Se você tentar este mesmo comando sem o parâmetro 0, ele usará o número configurado como ```minconf``` no seu bitcoin.conf.
+
+Você também pode listar todas as transações recebidas pela carteira em todos os endereços com o comando ```listtransactions``` :
+
+```
+$ bitcoin-cli listtransactions
+[
+]
+```
+
+Também podemos listar todos os endereços de uma conta com o comando ```getaddressesbyaccount``` com o identificador da conta como parâmetro - a padrão inicial é uma *string* vazia.:
+
+```
+$ bitcoin-cli getaddressesbyaccount ""
+[
+  "16ZAwja6jKwybWAQNhFUxQ65svHv11dGkw", 
+  "1J43MyYJ4FtnPAa8spDzXCH392fzgR61kG", 
+  "1Na1RLT5S8c78MAXGCfD6FKiCeHZaJndLo"
+]
+```
+
+E para ver a quantia total de todos endereços da carteira com o número de confirmações mínimos da configuração ```minconf```, basta usar o ```getbalance```:
+
+```
+$ bitcoin-cli getbalance
+0.01000000
+```
