@@ -462,7 +462,7 @@ $ bitcoin-cli dumpwallet wallet.txt
 
 E você terá um arquivo .txt com o *dump* da carteira inteira.
 
-#### Acessando Endereços e Recebendo Transações
+#### Transações
 
 O seu *software* cliente gera endereços automaticamente e os mantém em uma *pool* de endereços. O atributo *keypoolsize* que indica quantos endereços públicos já gerados a sua carteira tem pode ser obtido com *getinfo*. Para pegar um desses endereços, você simplemente usa o comando ```getnewaddress```:
 
@@ -507,3 +507,67 @@ E para ver a quantia total de todos endereços da carteira com o número de conf
 $ bitcoin-cli getbalance
 0.01000000
 ```
+
+Vamos, agora, ver como a transação é vista pelo *client* usando o comando ```gettransaction``` com o txid (id da transação; o *hash* da transação) que pegamos com o comando ```listtransactions``` como parâmetro:
+
+```
+$ bitcoin-cli gettransaction [HASH PLACEHOLDER]
+[]
+[TX PLACEHOLDER]
+```
+
+Esta é a transação em sua forma simplificada, mostrando a quantia transacionada (```amount```), número de confirmações da transação (```confirmations```), o ID da transação (```txid```), a hora da transação (```time```), a hora que seu *client* ficou sabendo da transação (```timereceived```) e os detalhes da transação (```details```).
+
+Para ver a transação no formato completo, você precisa usar o comando ```getrawtransaction``` com o ```txid``` como parâmetro que retornará a transação no formato de uma *string* hexadecimal para que você decodifique com o ```decoderawtransaction```:
+
+```
+$ bitcoin-cli getrawtransaction [TXID PLACEHOLDER]
+[RAWTX PLACEHOLDER]
+$ bitcoin-cli decoderawtransaction [RAWTX PLACEHOLDER]
+[DECODED TX PLACEHOLDER]
+```
+
+Ou juntando tudo em uma linha...
+
+```
+$ bitcoin-cli decoderawtransaction $(bitcoin-cli getrawtransaction [TXID PLACEHOLDER])
+[DECODED TX PLACEHOLDER]
+```
+
+Como você pode ver, desta forma nós conseguimos ver todos os elementos de uma transação com tudo que a rede precisa para verificar e validar ela. Nesta transação, eu usei N inputs e gerei N outputs sendo 10 *millibits* direcionado ao endereço da carteira no Bitcoin Core. Note que não existe a *fee* (ou taxa) de transação explícita; Ela nada mais é do que a diferença entre o todos os *inputs* e o total de todos *outputs*. Isso significa que qualquer fundo não gasto é considerado uma taxa de transação para recompensar o minerador responsável por incluir ela na blockchain.
+
+Feito isso, vamos usar o Bitcoin Core para enviar estes bitcoins para outro endereço pela linha de comando. O primeiro comando que precisamos é o ```listunspent``` para listar todos os *outputs* de nossa carteira que já foram confirmados:
+
+```
+$ bitcoin-cli listunspent
+[UNSPENT LIST PLACEHOLDER]
+```
+
+Aqui, podemos ver que em ```txid``` está o *hash* da transação responsável por criar o *output* ```vout``` 0 contendo 0.01000000 designados ao endereço ```1Na1RLT5S8c78MAXGCfD6FKiCeHZaJndLo```, assim como o número de confirmações e o ```scriptPubKey``` (mais sobre isso em [Transações](transacoes.md))
+
+#### Blocos
+
+Você também pode explorar blocos com utilizando a API JSON-RPC do Core. Vejamos o bloco da transação de 0.010 btc recebida usando o comando ```getblock``` com o *hash* do bloco como parâmetro (presente na transação após confirmada):
+
+```
+$ bitcoin-cli getblock [BLOCK HASH PLACEHOLDER]
+[BLOCK PLACEHOLDER]
+```
+
+Para pegarmos o *hash* de um bloco pela *height* (ou altura) dele na blockchain, usamos o comando ```getblockhash``` e o índice do bloco como parâmetro. A altura ou indíce do primeiro bloco é 0 e, desde então, a cada novo bloco ela é incrementada. Para vermos o famoso bloco *genesis* minerado por Satoshi Nakamoto, basta que usemos o parâmetro 0:
+
+```
+$ bitcoin-cli getblockhash 0
+[BLOCK HASH PLACEHOLDER]
+```
+
+E agora podemos usar o comando anterior ```getblock``` com o *hash* retornado como parâmetro:
+
+```
+$ bitcoin-cli getblock [BLOCK HASH PLACEHOLDER]
+[BLOCK PLACEHOLDER]
+```
+
+Os comandos ```gettransaction```, ```getblock``` e ```getblockhash``` tem todo o necessário para explorar a blockchain com o Bitcoin Core passando de uma transação para outra e de um bloco para outro como necessário.
+
+####
