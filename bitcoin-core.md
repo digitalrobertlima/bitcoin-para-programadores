@@ -553,6 +553,71 @@ $ bitcoin-cli listunspent
 
 Aqui, podemos ver que em ```txid``` está o *hash* da transação responsável por criar o *output* ```vout``` 0 contendo 0.01000000 designados ao endereço ```1Na1RLT5S8c78MAXGCfD6FKiCeHZaJndLo```, assim como o número de confirmações e o ```scriptPubKey``` (mais sobre isso em [Transações](transacoes.md))
 
+Para enviarmos estes bitcoins, teremos que criar uma transação que usa o *output* ```vout``` 0 da transação [TXID PLACEHOLDER] e o designar como *input* da próxima transação que enviará para o próximo endereço.
+
+Nós podemos ter uma visão mais detalhada do *output* que queremos usar com o comando ```gettxout``` dando o ```txid``` e o número do ```vout``` como parâmetros:
+
+```
+$ bitcoin-cli gettxout [TXID PLACEHOLDER]
+[TXOUT PLACEHOLDER]
+```
+
+Então, como você pode ver, este *output* designou 10 *millibits* para o endereço ```1Na1RLT5S8c78MAXGCfD6FKiCeHZaJndLo``` ter o direito de gastar como pode ser verificado junto com o *script* de transação mais comum da rede (mais detalhes sobre isso em [Transações](transacoes.md)). Para continuar a operação de envio dos bitcoins, vamos criar dois novos endereços para enviar os bitcoins:
+
+```
+$ bitcoin-cli getnewaddress
+19HJck9MQHbygSTmefug1uV65rrU7KEMVm  # <--- endereço recipiente principal
+$ bitcoin-cli getnewaddress
+1DBvgicHLNBvFuXKszrKk55DQnP2W2xNi  # <--- geramos um outro para o "troco" da transação
+```
+
+O próximo comando que usaremos para criar a transação é o ```createrawtransaction```, porém, antes devemos entender uma coisa importante sobre transações: **todos** os *inputs* (*outputs da anterior) devem ser gastos **completamente**. Isso é importante saber desde já, pois qualquer erro de programação na hora de montar uma transação em que não se gaste todos os *inputs* significará perda financeira. O que acontece é que qualquer valor que não seja explicitamente gasto numa transação será considerado como *fee* de mineração para o minerador que incluir a sua transação na blockchain. Logo, a diferença da soma de todos os *inputs* menos a soma de todos os *outputs* é igual à taxa que será paga ao minerador (soma dos *inputs* - soma dos *outputs* = taxa de mineração). Entendendo isso, podemos criar a transação com o ```createrawtransaction```:
+
+```
+$ bitcoin-cli createrawtransaction '[{"txid" : "[TXID PLACEHOLDer]", "vout" : 0}]' '{"19HJck9MQHbygSTmefug1uV65rrU7KEMVm": 0.006, "1DBvgicHLNBvFuXKszrKk55DQnP2W2xNi": 0.0039}'
+[RAW TX PLACEHOLDER]
+```
+
+O que criamos acima é uma transação enviando ```0.006``` bitcoins para ```19HJck9MQHbygSTmefug1uV65rrU7KEMVm``` como simulação de um endereço para um pagamento ou qualquer outra coisa, usamos o endereço ```1DBvgicHLNBvFuXKszrKk55DQnP2W2x``` como endereço de troco atribuindo ```0.0039``` bitcoins a ele; o que deixa ```0.0001``` (```0.006 - 0.0039 = 0.0001```) como taxa de transação.
+
+Para verificar que a transação foi formada corretamente como o esperado, podemos usar o comando ```decoderawtransaction``` com a transação codificada como parâmetro:
+
+```
+$ bitcoin-cli [RAW TX PLACEHOLDER]
+[DECODED RAW TX PLACEHOLDER]
+```
+
+Parece tudo certo. E, como pode ver, o ```scriptSig``` desta transação está vazio, pois não assinamos ainda. Sem a assinatura digital, esta transação é apenas um *template* que qualquer um poderia ter formado sem valor financeiro algum. Nós precisamos da assinatura para destrancar os *inputs* que estamos usando na transação e antes devemos destrancar a carteira com a senha para podermos expor a chave privada para a assinatura:
+
+```
+$ bitcoin-cli walletpassphrase naouseestasenhaidiota 200
+```
+
+E assinamos...
+
+```
+$ bitcoin-cli signrawtransaction [RAW TX PLACEHOLDER]
+[SIGNED RAW TX PLACEHOLDER]
+```
+
+Agora temos a transação assinada, retornada pelo ```signrawtransaction``` como podemos verificar com o ```decoderawtransaction```:
+
+```
+$ bitcoin-cli decoderawtransaction [SIGNED RAW TX PLACEHOLDER]
+[DECODED SIGNED RAW TX PLACEHOLDER]
+```
+
+Okay, nosso *input* agora tem o ```scriptSig``` preenchido e passa a ter valor real. Só assim ela pode ser verificada e validada pelos outros nós na rede.
+
+Finalmente, vamos enviar a transação assinada para a rede com ```sendrawtransaction``` para que a rede conheça e propague nossa transação:
+
+```
+$ bitcoin-cli sendrawtransaction [SINGED RAW TX PLACEHOLDER]
+[TXID PLACEHOLDER]
+```
+
+Agora temos o *hash* desta transação (*txid*) e podemos usar sobe ele os mesmos comandos que usamos com outras transações para olhar cada detalhe desta transação. Vale lembrar que, atualmente, este *txid* ainda pode mudar até que esta transação seja incluída na blockchain com o *txid* final.
+
 #### Blocos
 
 Você também pode explorar blocos com utilizando a API JSON-RPC do Core. Vejamos o bloco da transação de 0.010 btc recebida usando o comando ```getblock``` com o *hash* do bloco como parâmetro (presente na transação após confirmada):
@@ -576,6 +641,26 @@ $ bitcoin-cli getblock [BLOCK HASH PLACEHOLDER]
 [BLOCK PLACEHOLDER]
 ```
 
-Os comandos ```gettransaction```, ```getblock``` e ```getblockhash``` tem todo o necessário para explorar a blockchain com o Bitcoin Core passando de uma transação para outra e de um bloco para outro como necessário.
+Os comandos ```gettransaction```, ```getblock``` e ```getblockhash``` tem tudo o que você precisa para explorar a blockchain com o Bitcoin Core passando de uma transação para outra e de um bloco para outro como necessário.
 
-####
+#### Outras Implementações e Ferramentas
+
+O cliente bitcoind do Bitcoin Core é a implementação referência atual, porém, pela natureza * open-source* do Bitcoin, há uma variedade enorme de implementações e ferramentas alternativas em diferentes linguagens e com diferentes intuitos. Algumas delas são:
+
+[libbitcoin](https://github.com/libbitcoin/libbitcoin): Ferramenta para desenvolvimento Bitcoin multi-plataforma implementada em C++
+
+[libbitcoin explorer](https://github.com/libbitcoin/libbitcoin-explorer): Ferramenta de Linha de Comando para o Bitcoin
+
+[libbitcoin server](https://github.com/libbitcoin/libbitcoin-server): *Fullnode* e *Query Server* Bitcoin
+
+[btcd](https://github.com/btcsuite/btcd): Implementação do Bitcoin escrita em Go (golang)
+
+[bitcoinj](https://bitcoinj.github.io): *Library* Bitcoin escrita em Java
+
+[python-bitcoinlib](https://github.com/petertodd/python-bitcoinlib): *Library* Bitcoin escrita em Python
+
+[picocoin](https://github.com/jgarzik/picocoin): *Library* Bitcoin escrita em C
+
+... e muitas outras.
+
+Próximo capítulo: [Transações](transacoes.md)
