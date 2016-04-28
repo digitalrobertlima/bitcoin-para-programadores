@@ -618,6 +618,8 @@ $ bitcoin-cli sendrawtransaction [SINGED RAW TX PLACEHOLDER]
 
 Agora temos o *hash* desta transação (*txid*) e podemos usar sobe ele os mesmos comandos que usamos com outras transações para olhar cada detalhe desta transação. Vale lembrar que, atualmente, este *txid* ainda pode mudar até que esta transação seja incluída na blockchain com o *txid* final.
 
+Uma última coisa a se reparar é o fato de o Bitcoin, diferente de cartões de crédito e outros meios do sistema financeiro atual ser muito mais seguro pelo simples fato de que nenhuma informação secreta teve que ser enviada à rede - como nome, documentos, número de cartão de crédito, etc. Tudo que enviamos é uma transação com dados públicos e que não pode ser forjada por ninguém com a informação contida nela sem a chave privada para assinar digitalmente a transação. Num mundo conectado onde o roubo de identidade é um dos crimes mais lucrativos do mundo, esta característica é claramente uma gigantesca vantagem deste sistema.
+
 #### Blocos
 
 Você também pode explorar blocos com utilizando a API JSON-RPC do Core. Vejamos o bloco da transação de 0.010 btc recebida usando o comando ```getblock``` com o *hash* do bloco como parâmetro (presente na transação após confirmada):
