@@ -58,7 +58,7 @@ Exemplo de ambas funções sendo usadas em Python com a *string* "bitcoin" como 
 5f67cd0e647825711eac0b0bf78e0487b149bc3a
 ```
 
-Com estas funções em mão conseguimos verificar integridade de informações enviadas à rede, gerar e verificar prova de trabalho computacional ou *proof-of-work* e, com isso, criar a "cola" criptográfica fundamental para a segurança da blockchain (mais sobre isto em [Mineração](mineracao.md)).
+Com estas funções em mão conseguimos verificar integridade de informações enviadas à rede, gerar e verificar prova de trabalho computacional ou *proof-of-work* e, com isso, criar a "cola" criptográfica fundamental para a segurança da blockchain (mais detalhes em [Mineração](mineracao.md)).
 
 A compreensão sobre *hashes* neste nível de abstração já é suficiente para o entendimento do valor de suas propriedades no Bitcoin e o uso consciente destas propriedades que você verá adiante em mais exemplos. Caso você queira aprofundar o seu entendimento das abstrações matemáticas que possibilitam estas funções, recomendo: [ links list placeholder ]
 

@@ -18,10 +18,25 @@ Uma transação é a estrutura de dados responsável por formalizar em código a
 
 | Campo            | Descrição                                                                                      | Tamanho              | Tipo     |
 |------------------|------------------------------------------------------------------------------------------------|----------------------|----------|
-| *version*        | Identifica que regras a transação segue                                                        | 4 *bytes*            | int32_t  |
+| *version*        | Identifica as regras que a transação segue                                                     | 4 *bytes*            | int32_t  |
 | *tx_in count*    | Identifica quantos *inputs* a transação tem                                                    | 1-9 *bytes*          | var_int  |
 | *tx_in*          | O(s) *input(s)* da transação                                                                   | Tamanho variável     | tx_in[]  |
 | *tx_out count*   | Identifica quantos *outputs* a transação tem                                                   | 1-9 *bytes*          | var_int  |
 | *tx_out*         | O(s) *output(s)* da transação                                                                  | Tamanho variável     | tx_out[] |
 | *lock_time*      | Um *timestamp UNIX* ou um número de bloco a partir de quando/qual a transação será destrancada | 4 *bytes*            | uint32_t |
+
+### Outputs e Inputs
+
+Os *inputs* e *outputs* são os elementos fundamentais de uma transação. As transações são ligadas umas às outras por estes dois elementos; Os *inputs* de uma transação são, simplemente, os *outputs* de uma transação anterior. Estes *outputs* prontos para serem usado por uma nova transação são chamados de *UTXO* (*unspent transaction output*/*output* de transação não gasto).
+
+A quantia de bitcoins que você tem são apenas uma abstração dos *UTXO* que você tem atribuídos a endereços sob o seu controle. Quando alguém diz que "tem 15 bitcoins" significa que esta pessoa tem uma quantidade de *UTXO* que atribuem, em seu total, 15 bitcoins para serem destrancados por endereços cujas chaves privadas estão sob controle dela. O sistema não tem um contador que diz algo como "15 bitcoins em sua conta"; ele apenas conhece *UTXOs* que são, por sua vez, abstraídos para valores como "15 bitcoins".
+
+O modo como as transações funcionam, faz com que elas formem uma sucessiva corrente de *inputs* e *outputs* trancando e destrancando valores na rede.
+
+[INPUT/OUTPUT chain image PLACEHOLDER]
+
+Tendo como única exceção a este comportamento, as chamadas transações *coinbase* que são as transações criadas pelos mineradores ao incluirem um novo bloco na blockchain (mais detalhes em [Mineração](mineracao.md)) e recolherem o prêmio pelo trabalho.
+
+[coinbase tx image PLACEHOLDER]
+
 
