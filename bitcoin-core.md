@@ -553,7 +553,7 @@ $ bitcoin-cli listunspent
 
 Aqui, podemos ver que em ```txid``` está o *hash* da transação responsável por criar o *output* ```vout``` 0 contendo 0.01000000 designados ao endereço ```1Na1RLT5S8c78MAXGCfD6FKiCeHZaJndLo```, assim como o número de confirmações e o ```scriptPubKey``` (mais detalhes em [Transações](transacoes.md))
 
-Para enviarmos estes bitcoins, teremos que criar uma transação que usa o *output* ```vout``` 0 da transação [TXID PLACEHOLDER] e o designar como *input* da próxima transação que enviará para o próximo endereço.
+Para enviarmos estes bitcoins, teremos que criar uma transação que usa o *output* ```vout``` 0 da transação [TXID PLACEHOLDER] e o referenciar no *input* da próxima transação que enviará para o próximo endereço.
 
 Nós podemos ter uma visão mais detalhada do *output* que queremos usar com o comando ```gettxout``` dando o ```txid``` e o número do ```vout``` como parâmetros:
 
@@ -571,7 +571,7 @@ $ bitcoin-cli getnewaddress
 1DBvgicHLNBvFuXKszrKk55DQnP2W2xNi  # <--- geramos um outro para o "troco" da transação
 ```
 
-O próximo comando que usaremos para criar a transação é o ```createrawtransaction```, porém, antes devemos entender uma coisa importante sobre transações: **todos** os *inputs* (*outputs da anterior) devem ser gastos **completamente**. Isso é importante saber desde já, pois qualquer erro de programação na hora de montar uma transação em que não se gaste todos os *inputs* significará perda financeira. O que acontece é que qualquer valor que não seja explicitamente gasto numa transação será considerado como *fee* de mineração para o minerador que incluir a sua transação na blockchain. Logo, a diferença da soma de todos os *inputs* menos a soma de todos os *outputs* é igual à taxa que será paga ao minerador (soma dos *inputs* - soma dos *outputs* = taxa de mineração). Entendendo isso, podemos criar a transação com o ```createrawtransaction```:
+O próximo comando que usaremos para criar a transação é o ```createrawtransaction```, porém, antes devemos entender uma coisa importante sobre transações: **todos** os *inputs* devem ser gastos **completamente**. Isso é importante saber desde já, pois qualquer erro de programação na hora de montar uma transação em que não se gaste todos os *inputs* significará perda financeira. O que acontece é que qualquer valor que não seja explicitamente gasto numa transação será considerado como *fee* de mineração para o minerador que incluir a sua transação na blockchain. Logo, a diferença da soma de todos os *inputs* menos a soma de todos os *outputs* é igual à taxa que será paga ao minerador (soma dos *inputs* - soma dos *outputs* = taxa de mineração). Entendendo isso, podemos criar a transação com o ```createrawtransaction```:
 
 ```
 $ bitcoin-cli createrawtransaction '[{"txid" : "[TXID PLACEHOLDer]", "vout" : 0}]' '{"19HJck9MQHbygSTmefug1uV65rrU7KEMVm": 0.006, "1DBvgicHLNBvFuXKszrKk55DQnP2W2xNi": 0.0039}'
@@ -665,4 +665,4 @@ O cliente bitcoind do Bitcoin Core é a implementação referência atual, poré
 
 ... e muitas outras.
 
-Próximo capítulo: [Transações](transacoes.md)
+Próximo capítulo: [Endereços](enderecos.md)
