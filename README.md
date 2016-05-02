@@ -4,8 +4,10 @@
 
 ## Sobre o Conteúdo
 
-Este material tem o objetivo de introduzir programadores aos conceitos básicos necessários para o entendimento e desenvolvimento de aplicações Bitcoin. O foco é o mais prático quanto possível sem perder de vista a teoria necessária para uma prática sólida e independente. Logo, por não ser uma especificacão detalhada, materiais opcionais para aprofundamento são recomendados ao longo do texto.
+Tornar-se apto a desenvolver aplicações Bitcoin de forma segura e consciente requer o entendimento de um grupo peculiar de assuntos, incluindo - sem limitar - *Network*, Criptografia, Sistemas Distribuídos, etc. E, tão importante quanto assuntos exatos, estão assuntos humanos para que possamos ter a visão de como sistemas podem criar incentivos para que atores humanos ajam de uma forma ou de outra, ou como uma aplicação pode se tornar mais segura utilizando a linguagem correta.
+
+Este material tem o objetivo de introduzir programadores com interesse nascente nesta tecnologia aos conceitos básicos necessários para o entendimento e desenvolvimento de aplicações Bitcoin. O foco é o mais prático quanto possível sem perder de vista a teoria necessária para uma prática sólida e independente. Logo, por não ser uma especificacão técnica detalhada sobre cada minúncia do protocolo, materiais opcionais para aprofundamento são recomendados ao longo do texto.
 
 A linguagem de programação utilizada nos exemplos de implementação é [Python 3](http://python.org) devido à sua sintaxe de fácil compreensão mesmo para programadores sem experiência na linguagem e a disposição de ótimas bibliotecas para abstração de todo conhecimento que não é especificamente necessário para o conteúdo apresentado, fazendo com que o material atinja o objetivo de capacitar o maior número de pessoas com os mesmos recursos.
 
-Tudo o que você precisa para tirar máximo proveito do material apresentado é ser um programador com alguma exposição ao paradigma de Orientação a Objetos e ter interesse por esta tecnologia revolucionária.
+Tudo o que você precisa para tirar máximo proveito do material apresentado é ter alguma experiência na arte da programação de computadores, exposição ao paradigma de Orientação a Objetos e interesse por esta tecnologia revolucionária. Que este possa ser apenas o início de sua jornada numa tecnologia que importa.
