@@ -82,4 +82,4 @@ Por exemplo, digamos que Maria envia 1 bitcoin para o endereço bitcoin de João
 
 Em [Endereços](enderecos.md), veremos como a chave privada pode ser gerada e como fazemos para derivar a chave pública a partir da chave privada para, finalmente, gerar um endereço Bitcoin. Em [Transações](transacoes.md) veremos como as assinaturas são realmente enxergadas na rede e como assinar transações utilizando os comandos RPC do Bitcoin Core e implementaremos um código Python com o mesmo intuito. E, para caso você queira se aprofundar mais nas abstrações matemáticas que dão à luz esta tecnologia amplamente utilizada atualmente, recomendo: [links list placeholder]
 
-Próximo capítulo: [Bitcoin Core](bitcoin-core.md)
+*Próximo capítulo*: [Bitcoin Core](bitcoin-core.md)

@@ -665,4 +665,4 @@ O cliente bitcoind do Bitcoin Core é a implementação referência atual, poré
 
 ... e muitas outras.
 
-Próximo capítulo: [Endereços](enderecos.md)
+*Próximo capítulo:* [Endereços](enderecos.md)
