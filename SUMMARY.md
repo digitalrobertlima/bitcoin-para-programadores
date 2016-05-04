@@ -2,7 +2,7 @@
 
 * [Introdução](intro.md)
 * [Bitcoin Core](bitcoin-core.md)
-* [Endereços](enderecos.md)
+* [Endereços e Carteiras e Carteiras](enderecos-e-carteiras.md)
 * [Transações](transacoes.md)
 * [Blockchain](blockchain.md)
 * [Carteiras](carteiras.md)

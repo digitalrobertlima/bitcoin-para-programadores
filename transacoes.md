@@ -110,7 +110,7 @@ Este *unlocking script* satisfaz o "desafio" proposto pelo *locking script* ao r
 Agora, podemos verificar a expressão proposta inicialmente com uma situação comum em transações Bitcoin, notando, antes, o que cada um dos **opcodes** faz.
 
 ```OP_DUP```: Duplica o valor no topo da pilha, ou seja, se ```x``` estiver no topo ```xx``` será retornado.
-```OP_HASH160```: Aplica duas funções *hash* no *input*. Primeiro um SHA-256 e depois um RIPEMD-160, o que a partir de uma chave pública formará o endereço Bitcoin correspondente como visto em [Endereços](enderecos.md).
+```OP_HASH160```: Aplica duas funções *hash* no *input*. Primeiro um SHA-256 e depois um RIPEMD-160, o que a partir de uma chave pública formará o endereço Bitcoin correspondente como visto em [Endereços e Carteiras](enderecos-e-carteiras.md).
 ```OP_EQUALVERIFY```: Aplica ```OP_EQUAL``` e ```OP_VERIFY``` logo em seguida, o que significa que checa se os *inputs* são iguais (e retorna TRUE se forem) e, então, marca o *script* como inválido se o valor no topo da pilha for FALSE e nada se for TRUE.
 ```OP_CHECKSIG```: Aplica uma função *hash* sobre os *outputs*, *inputs* e *script* da transação e verifica se a assinatura realmente pertence à chave esperada.
 
@@ -164,7 +164,7 @@ OP_HASH160 ab8648c91206a3770b8aaf6f5153b6b35423caf0 OP_EQUAL
 
 O que garantiria que o *script* de destrancamento seria verificado e bateria com o *hash* esperado.
 
-Isso resolve alguns problemas, mas a capacidade mais interessante vem com a *feature* do P2SH codificar o *hash* do *script* como um endereço Bitcoin como pode ser visto na [BIP0013](https://github.com/bitcoin/bips/blob/master/bip-0013.mediawiki) que é chamada de **Pay to Script Hash Address*. Com isso, após o trabalho de criação do *hash* do script, a única coisa que precisa ser feita é criar um endereço a partir deste *script* aplicando a codificação *Base58Check* utilizada para endereços Bitcoin resultando em um endereço Bitcoin normal com o prefixo legível 3 como visto em [Endereços](enderecos.md) sobre o significado de prefixos de endereços.
+Isso resolve alguns problemas, mas a capacidade mais interessante vem com a *feature* do P2SH codificar o *hash* do *script* como um endereço Bitcoin como pode ser visto na [BIP0013](https://github.com/bitcoin/bips/blob/master/bip-0013.mediawiki) que é chamada de **Pay to Script Hash Address*. Com isso, após o trabalho de criação do *hash* do script, a única coisa que precisa ser feita é criar um endereço a partir deste *script* aplicando a codificação *Base58Check* utilizada para endereços Bitcoin resultando em um endereço Bitcoin normal com o prefixo legível 3 como visto em [Endereços e Carteiras](enderecos-e-carteiras.md) sobre o significado de prefixos de endereços.
 
 Finalmente, a partir de agora, qualquer transação enviada para este endereço com prefixo 3 respeitará as regras de destrancamento ditadas pelo *script* utilizado para formar este endereço. Resolvendo, entre outros problemas descritos acima, a questão de facilidade de pagamento já que ningueḿ que envia a transação para este endereço precisa conhecer o *script* que o formou.
 
