@@ -624,7 +624,7 @@ $ bitcoin-cli decoderawtransaction 0100000001e6980adab5435ca0214cb5e047c334a4d8f
 Ou juntando tudo em uma linha para melhorar a visualização...
 
 ```
-$ bitcoin-cli decoderawtransaction $(bitcoin-cli getrawtransaction [TXID PLACEHOLDER])
+$ bitcoin-cli decoderawtransaction $(bitcoin-cli getrawtransaction 01ecaecc96b148589be10ef3f8fffc70dcc14970ed77144a787c087dfcd0b5e2)
 {
   "txid": "01ecaecc96b148589be10ef3f8fffc70dcc14970ed77144a787c087dfcd0b5e2",
   "size": 226,
@@ -694,7 +694,7 @@ $ bitcoin-cli listunspent
 
 Aqui, podemos ver que em ```txid``` está o *hash* da transação responsável por criar o *output* ```vout``` 0 contendo 0.01000000 designados ao endereço ```1GswWkrWvxGhCARW4w2ibnwk3pDURM6GpC```, assim como o número de confirmações e o ```scriptPubKey``` (mais detalhes em [Transações](transacoes.md))
 
-Para enviarmos estes bitcoins, teremos que criar uma transação que usa o *output* ```vout``` 0 da transação [TXID PLACEHOLDER] e o referenciar no *input* da próxima transação que enviará para o próximo endereço.
+Para enviarmos estes bitcoins, teremos que criar uma transação que usa o *output* ```vout``` 0 da transação 01ecaecc96b148589be10ef3f8fffc70dcc14970ed77144a787c087dfcd0b5e2 e o referenciar no *input* da próxima transação que enviará para o próximo endereço.
 
 Nós podemos ter uma visão mais detalhada do *output* que queremos usar com o comando ```gettxout``` dando o ```txid``` e o número do ```vout``` como parâmetros:
 
