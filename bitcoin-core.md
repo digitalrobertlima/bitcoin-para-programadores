@@ -476,7 +476,7 @@ O seu *software* cliente gera endereços automaticamente e os mantém em uma *po
 
 ```
 $ bitcoin-cli getnewaddress
-1Na1RLT5S8c78MAXGCfD6FKiCeHZaJndLo
+1GswWkrWvxGhCARW4w2ibnwk3pDURM6GpC
 ```
 
 Envie alguns *millibits* para o endereço que você acabou de pegar na linha de comando para você poder ver como checar a quantia recebida por endereço. No meu caso, vou enviar 10 *millibits* (0.010 bitcoins) para o endereço.
@@ -484,7 +484,7 @@ Envie alguns *millibits* para o endereço que você acabou de pegar na linha de 
 Após enviar, você pode checar o valor recebido com o comando ```getreceivedbyaddress```, porém, por padrão, ele precisa de alguns números de confirmação antes de mostrar a quantia - você pode configurar isso no arquivo bitcoin.conf; para que mostre a quantia recebida mesmo sem confirmação, chamaremos este comando com o parâmetro de confirmações mínimas como 0;
 
 ```
-$ bitcoin-cli getreceivedbyaddress 1Na1RLT5S8c78MAXGCfD6FKiCeHZaJndLo 0
+$ bitcoin-cli getreceivedbyaddress 1GswWkrWvxGhCARW4w2ibnwk3pDURM6GpC 0
 0.01000000
 ```
 
@@ -495,7 +495,24 @@ Você também pode listar todas as transações recebidas pela carteira em todos
 ```
 $ bitcoin-cli listtransactions
 [
+  {
+    "account": "",
+    "address": "1GswWkrWvxGhCARW4w2ibnwk3pDURM6GpC",
+    "category": "receive",
+    "amount": 0.01000000,
+    "label": "",
+    "vout": 0,
+    "confirmations": 0,
+    "trusted": false,
+    "txid": "01ecaecc96b148589be10ef3f8fffc70dcc14970ed77144a787c087dfcd0b5e2",
+    "walletconflicts": [
+    ],
+    "time": 1462453065,
+    "timereceived": 1462453065,
+    "bip125-replaceable": "no"
+  }
 ]
+
 ```
 
 Também podemos listar todos os endereços de uma conta com o comando ```getaddressesbyaccount``` com o identificador da conta como parâmetro - a padrão inicial é uma *string* vazia.:
@@ -503,9 +520,12 @@ Também podemos listar todos os endereços de uma conta com o comando ```getaddr
 ```
 $ bitcoin-cli getaddressesbyaccount ""
 [
-  "16ZAwja6jKwybWAQNhFUxQ65svHv11dGkw", 
-  "1J43MyYJ4FtnPAa8spDzXCH392fzgR61kG", 
-  "1Na1RLT5S8c78MAXGCfD6FKiCeHZaJndLo"
+  "115PHNcNbBtaWeb1iYfX96hYiehgnxamL2", 
+  "1GswWkrWvxGhCARW4w2ibnwk3pDURM6GpC", 
+  "1HFJpe3knukVwfqj22m9mVvLz9R4Ac76f9", 
+  "1JEqZijxDfTyXHYjiaJTy6SgSCJNdmTayr", 
+  "1KCoEFDXmtde2LEshZfbDZFwRwrX8pg8H9", 
+  "1PU7nWdqJsev4sWmgcDJwZG9EZRuS7nLGU"
 ]
 ```
 
@@ -519,9 +539,31 @@ $ bitcoin-cli getbalance
 Vamos, agora, ver como a transação é vista pelo *client* usando o comando ```gettransaction``` com o txid (id da transação; o *hash* da transação) que pegamos com o comando ```listtransactions``` como parâmetro:
 
 ```
-$ bitcoin-cli gettransaction [HASH PLACEHOLDER]
-[]
-[TX PLACEHOLDER]
+$ bitcoin-cli gettransaction 01ecaecc96b148589be10ef3f8fffc70dcc14970ed77144a787c087dfcd0b5e2
+{
+  "amount": 0.01000000,
+  "confirmations": 1,
+  "blockhash": "0000000000000000042e065b770fb46aba51bd389d086a1a2a47c5d9e5ffe575",
+  "blockindex": 2408,
+  "blocktime": 1462453539,
+  "txid": "01ecaecc96b148589be10ef3f8fffc70dcc14970ed77144a787c087dfcd0b5e2",
+  "walletconflicts": [
+  ],
+  "time": 1462453065,
+  "timereceived": 1462453065,
+  "bip125-replaceable": "no",
+  "details": [
+    {
+      "account": "",
+      "address": "1GswWkrWvxGhCARW4w2ibnwk3pDURM6GpC",
+      "category": "receive",
+      "amount": 0.01000000,
+      "label": "",
+      "vout": 0
+    }
+  ],
+  "hex": "0100000001e6980adab5435ca0214cb5e047c334a4d8f01d5c7b6f55f022ac903db7e75cb7010000006b483045022100ddb1a8477d5ac64c688122f9ecb6306991ed3148d93639601f0ac145ca7bb49602203b306c2d60555dc2ccf89636b7994b04a03960a6fc541c673a04036da641940f0121037d1588b4d483db39a0d076f78d03181cf10dcf362cc06f2a01ff20d447c94388ffffffff0240420f00000000001976a914ae2c30a645a14fa36425119e1d174b4d201b8f5988acc8684200000000001976a91474e79a48b73182083df37632bba597961ef51da788ac00000000"
+}
 ```
 
 Esta é a transação em sua forma simplificada, mostrando a quantia transacionada (```amount```), número de confirmações da transação (```confirmations```), o ID da transação (```txid```), a hora da transação (```time```), a hora que seu *client* ficou sabendo da transação (```timereceived```) e os detalhes da transação (```details```).
@@ -529,17 +571,105 @@ Esta é a transação em sua forma simplificada, mostrando a quantia transaciona
 Para ver a transação no formato completo, você precisa usar o comando ```getrawtransaction``` com o ```txid``` como parâmetro que retornará a transação no formato de uma *string* hexadecimal para que você decodifique com o ```decoderawtransaction```:
 
 ```
-$ bitcoin-cli getrawtransaction [TXID PLACEHOLDER]
-[RAWTX PLACEHOLDER]
-$ bitcoin-cli decoderawtransaction [RAWTX PLACEHOLDER]
-[DECODED TX PLACEHOLDER]
+$ bitcoin-cli getrawtransaction 01ecaecc96b148589be10ef3f8fffc70dcc14970ed77144a787c087dfcd0b5e2
+0100000001e6980adab5435ca0214cb5e047c334a4d8f01d5c7b6f55f022ac903db7e75cb7010000006b483045022100ddb1a8477d5ac64c688122f9ecb6306991ed3148d93639601f0ac145ca7bb49602203b306c2d60555dc2ccf89636b7994b04a03960a6fc541c673a04036da641940f0121037d1588b4d483db39a0d076f78d03181cf10dcf362cc06f2a01ff20d447c94388ffffffff0240420f00000000001976a914ae2c30a645a14fa36425119e1d174b4d201b8f5988acc8684200000000001976a91474e79a48b73182083df37632bba597961ef51da788ac00000000
+$ bitcoin-cli decoderawtransaction 0100000001e6980adab5435ca0214cb5e047c334a4d8f01d5c7b6f55f022ac903db7e75cb7010000006b483045022100ddb1a8477d5ac64c688122f9ecb6306991ed3148d93639601f0ac145ca7bb49602203b306c2d60555dc2ccf89636b7994b04a03960a6fc541c673a04036da641940f0121037d1588b4d483db39a0d076f78d03181cf10dcf362cc06f2a01ff20d447c94388ffffffff0240420f00000000001976a914ae2c30a645a14fa36425119e1d174b4d201b8f5988acc8684200000000001976a91474e79a48b73182083df37632bba597961ef51da788ac00000000
+{
+  "txid": "01ecaecc96b148589be10ef3f8fffc70dcc14970ed77144a787c087dfcd0b5e2",
+  "size": 226,
+  "version": 1,
+  "locktime": 0,
+  "vin": [
+    {
+      "txid": "b75ce7b73d90ac22f0556f7b5c1df0d8a434c347e0b54c21a05c43b5da0a98e6",
+      "vout": 1,
+      "scriptSig": {
+        "asm": "3045022100ddb1a8477d5ac64c688122f9ecb6306991ed3148d93639601f0ac145ca7bb49602203b306c2d60555dc2ccf89636b7994b04a03960a6fc541c673a04036da641940f[ALL] 037d1588b4d483db39a0d076f78d03181cf10dcf362cc06f2a01ff20d447c94388",
+        "hex": "483045022100ddb1a8477d5ac64c688122f9ecb6306991ed3148d93639601f0ac145ca7bb49602203b306c2d60555dc2ccf89636b7994b04a03960a6fc541c673a04036da641940f0121037d1588b4d483db39a0d076f78d03181cf10dcf362cc06f2a01ff20d447c94388"
+      },
+      "sequence": 4294967295
+    }
+  ],
+  "vout": [
+    {
+      "value": 0.01000000,
+      "n": 0,
+      "scriptPubKey": {
+        "asm": "OP_DUP OP_HASH160 ae2c30a645a14fa36425119e1d174b4d201b8f59 OP_EQUALVERIFY OP_CHECKSIG",
+        "hex": "76a914ae2c30a645a14fa36425119e1d174b4d201b8f5988ac",
+        "reqSigs": 1,
+        "type": "pubkeyhash",
+        "addresses": [
+          "1GswWkrWvxGhCARW4w2ibnwk3pDURM6GpC"
+        ]
+      }
+    }, 
+    {
+      "value": 0.04352200,
+      "n": 1,
+      "scriptPubKey": {
+        "asm": "OP_DUP OP_HASH160 74e79a48b73182083df37632bba597961ef51da7 OP_EQUALVERIFY OP_CHECKSIG",
+        "hex": "76a91474e79a48b73182083df37632bba597961ef51da788ac",
+        "reqSigs": 1,
+        "type": "pubkeyhash",
+        "addresses": [
+          "1Bf8qHi9q3ASGMHwf123E5RbTfMiky7TSy"
+        ]
+      }
+    }
+  ]
+}
 ```
 
-Ou juntando tudo em uma linha...
+Ou juntando tudo em uma linha para melhorar a visualização...
 
 ```
 $ bitcoin-cli decoderawtransaction $(bitcoin-cli getrawtransaction [TXID PLACEHOLDER])
-[DECODED TX PLACEHOLDER]
+{
+  "txid": "01ecaecc96b148589be10ef3f8fffc70dcc14970ed77144a787c087dfcd0b5e2",
+  "size": 226,
+  "version": 1,
+  "locktime": 0,
+  "vin": [
+    {
+      "txid": "b75ce7b73d90ac22f0556f7b5c1df0d8a434c347e0b54c21a05c43b5da0a98e6",
+      "vout": 1,
+      "scriptSig": {
+        "asm": "3045022100ddb1a8477d5ac64c688122f9ecb6306991ed3148d93639601f0ac145ca7bb49602203b306c2d60555dc2ccf89636b7994b04a03960a6fc541c673a04036da641940f[ALL] 037d1588b4d483db39a0d076f78d03181cf10dcf362cc06f2a01ff20d447c94388",
+        "hex": "483045022100ddb1a8477d5ac64c688122f9ecb6306991ed3148d93639601f0ac145ca7bb49602203b306c2d60555dc2ccf89636b7994b04a03960a6fc541c673a04036da641940f0121037d1588b4d483db39a0d076f78d03181cf10dcf362cc06f2a01ff20d447c94388"
+      },
+      "sequence": 4294967295
+    }
+  ],
+  "vout": [
+    {
+      "value": 0.01000000,
+      "n": 0,
+      "scriptPubKey": {
+        "asm": "OP_DUP OP_HASH160 ae2c30a645a14fa36425119e1d174b4d201b8f59 OP_EQUALVERIFY OP_CHECKSIG",
+        "hex": "76a914ae2c30a645a14fa36425119e1d174b4d201b8f5988ac",
+        "reqSigs": 1,
+        "type": "pubkeyhash",
+        "addresses": [
+          "1GswWkrWvxGhCARW4w2ibnwk3pDURM6GpC"
+        ]
+      }
+    }, 
+    {
+      "value": 0.04352200,
+      "n": 1,
+      "scriptPubKey": {
+        "asm": "OP_DUP OP_HASH160 74e79a48b73182083df37632bba597961ef51da7 OP_EQUALVERIFY OP_CHECKSIG",
+        "hex": "76a91474e79a48b73182083df37632bba597961ef51da788ac",
+        "reqSigs": 1,
+        "type": "pubkeyhash",
+        "addresses": [
+          "1Bf8qHi9q3ASGMHwf123E5RbTfMiky7TSy"
+        ]
+      }
+    }
+  ]
+}
 ```
 
 Como você pode ver, desta forma nós conseguimos ver todos os elementos de uma transação com tudo que a rede precisa para verificar e validar ela. Nesta transação, eu usei N inputs e gerei N outputs sendo 10 *millibits* direcionado ao endereço da carteira no Bitcoin Core. Note que não existe a *fee* (ou taxa) de transação explícita; Ela nada mais é do que a diferença entre o todos os *inputs* e o total de todos *outputs*. Isso significa que qualquer fundo não gasto é considerado uma taxa de transação para recompensar o minerador responsável por incluir ela na blockchain.
@@ -548,43 +678,114 @@ Feito isso, vamos usar o Bitcoin Core para enviar estes bitcoins para outro ende
 
 ```
 $ bitcoin-cli listunspent
-[UNSPENT LIST PLACEHOLDER]
+  {
+    "txid": "01ecaecc96b148589be10ef3f8fffc70dcc14970ed77144a787c087dfcd0b5e2",
+    "vout": 0,
+    "address": "1GswWkrWvxGhCARW4w2ibnwk3pDURM6GpC",
+    "account": "",
+    "scriptPubKey": "76a914ae2c30a645a14fa36425119e1d174b4d201b8f5988ac",
+    "amount": 0.01000000,
+    "confirmations": 1,
+    "spendable": true
+  }
+]
+
 ```
 
-Aqui, podemos ver que em ```txid``` está o *hash* da transação responsável por criar o *output* ```vout``` 0 contendo 0.01000000 designados ao endereço ```1Na1RLT5S8c78MAXGCfD6FKiCeHZaJndLo```, assim como o número de confirmações e o ```scriptPubKey``` (mais detalhes em [Transações](transacoes.md))
+Aqui, podemos ver que em ```txid``` está o *hash* da transação responsável por criar o *output* ```vout``` 0 contendo 0.01000000 designados ao endereço ```1GswWkrWvxGhCARW4w2ibnwk3pDURM6GpC```, assim como o número de confirmações e o ```scriptPubKey``` (mais detalhes em [Transações](transacoes.md))
 
 Para enviarmos estes bitcoins, teremos que criar uma transação que usa o *output* ```vout``` 0 da transação [TXID PLACEHOLDER] e o referenciar no *input* da próxima transação que enviará para o próximo endereço.
 
 Nós podemos ter uma visão mais detalhada do *output* que queremos usar com o comando ```gettxout``` dando o ```txid``` e o número do ```vout``` como parâmetros:
 
 ```
-$ bitcoin-cli gettxout [TXID PLACEHOLDER]
-[TXOUT PLACEHOLDER]
+$ bitcoin-cli gettxout 01ecaecc96b148589be10ef3f8fffc70dcc14970ed77144a787c087dfcd0b5e2 0
+{
+  "bestblock": "0000000000000000042e065b770fb46aba51bd389d086a1a2a47c5d9e5ffe575",
+  "confirmations": 1,
+  "value": 0.01000000,
+  "scriptPubKey": {
+    "asm": "OP_DUP OP_HASH160 ae2c30a645a14fa36425119e1d174b4d201b8f59 OP_EQUALVERIFY OP_CHECKSIG",
+    "hex": "76a914ae2c30a645a14fa36425119e1d174b4d201b8f5988ac",
+    "reqSigs": 1,
+    "type": "pubkeyhash",
+    "addresses": [
+      "1GswWkrWvxGhCARW4w2ibnwk3pDURM6GpC"
+    ]
+  },
+  "version": 1,
+  "coinbase": false
+}
+
 ```
 
-Então, como você pode ver, este *output* designou 10 *millibits* para o endereço ```1Na1RLT5S8c78MAXGCfD6FKiCeHZaJndLo``` ter o direito de gastar como pode ser verificado junto com o *script* de transação mais comum da rede (mais detalhes sobre isso em [Transações](transacoes.md)). Para continuar a operação de envio dos bitcoins, vamos criar dois novos endereços para enviar os bitcoins:
+Então, como você pode ver, este *output* designou 10 *millibits* para o endereço ```1GswWkrWvxGhCARW4w2ibnwk3pDURM6GpC``` ter o direito de gastar como pode ser verificado junto com o *script* de transação mais comum da rede (mais detalhes sobre isso em [Transações](transacoes.md)). Para continuar a operação de envio dos bitcoins, vamos criar dois novos endereços para enviar os bitcoins:
 
 ```
 $ bitcoin-cli getnewaddress
-19HJck9MQHbygSTmefug1uV65rrU7KEMVm  # <--- endereço recipiente principal
+1N8A7WLw4TA8Vbu6GQ9JSotbvtTPY5uKhf  # <--- endereço recipiente principal
 $ bitcoin-cli getnewaddress
-1DBvgicHLNBvFuXKszrKk55DQnP2W2xNi  # <--- geramos um outro para o "troco" da transação
+1EoPUX89wRFGHRNGJFTzqfNcRgdzgs5JhK  # <--- geramos um outro para o "troco" da transação
 ```
 
 O próximo comando que usaremos para criar a transação é o ```createrawtransaction```, porém, antes devemos entender uma coisa importante sobre transações: **todos** os *inputs* devem ser gastos **completamente**. Isso é importante saber desde já, pois qualquer erro de programação na hora de montar uma transação em que não se gaste todos os *inputs* significará perda financeira. O que acontece é que qualquer valor que não seja explicitamente gasto numa transação será considerado como *fee* de mineração para o minerador que incluir a sua transação na blockchain. Logo, a diferença da soma de todos os *inputs* menos a soma de todos os *outputs* é igual à taxa que será paga ao minerador (soma dos *inputs* - soma dos *outputs* = taxa de mineração). Entendendo isso, podemos criar a transação com o ```createrawtransaction```:
 
 ```
-$ bitcoin-cli createrawtransaction '[{"txid" : "[TXID PLACEHOLDer]", "vout" : 0}]' '{"19HJck9MQHbygSTmefug1uV65rrU7KEMVm": 0.006, "1DBvgicHLNBvFuXKszrKk55DQnP2W2xNi": 0.0039}'
-[RAW TX PLACEHOLDER]
+$ bitcoin-cli createrawtransaction '[{"txid" : "01ecaecc96b148589be10ef3f8fffc70dcc14970ed77144a787c087dfcd0b5e2", "vout" : 0}]' '{"1N8A7WLw4TA8Vbu6GQ9JSotbvtTPY5uKhf": 0.006, "1EoPUX89wRFGHRNGJFTzqfNcRgdzgs5JhK": 0.0039}'
+0100000001e2b5d0fc7d087c784a1477ed7049c1dc70fcfff8f30ee19b5848b196ccaeec010000000000ffffffff02c0270900000000001976a914e7b528dec5f14d053d6f32d8508ccb287932c43188ac70f30500000000001976a914975f87b998f171ee6c6426e2b018414d2abec50f88ac00000000
 ```
 
-O que criamos acima é uma transação enviando ```0.006``` bitcoins para ```19HJck9MQHbygSTmefug1uV65rrU7KEMVm``` como simulação de um endereço para um pagamento ou qualquer outra coisa, usamos o endereço ```1DBvgicHLNBvFuXKszrKk55DQnP2W2x``` como endereço de troco atribuindo ```0.0039``` bitcoins a ele; o que deixa ```0.0001``` (```0.006 - 0.0039 = 0.0001```) como taxa de transação.
+O que criamos acima é uma transação enviando ```0.006``` bitcoins para ```1N8A7WLw4TA8Vbu6GQ9JSotbvtTPY5uKhf``` como simulação de um endereço para um pagamento ou qualquer outra coisa, usamos o endereço ```1EoPUX89wRFGHRNGJFTzqfNcRgdzgs5JhK``` como endereço de troco atribuindo ```0.0039``` bitcoins a ele; o que deixa ```0.0001``` (```0.006 - 0.0039 = 0.0001```) como taxa de transação.
 
 Para verificar que a transação foi formada corretamente como o esperado, podemos usar o comando ```decoderawtransaction``` com a transação codificada como parâmetro:
 
 ```
-$ bitcoin-cli [RAW TX PLACEHOLDER]
-[DECODED RAW TX PLACEHOLDER]
+$ bitcoin-cli decoderawtransaction 0100000001e2b5d0fc7d087c784a1477ed7049c1dc70fcfff8f30ee19b5848b196ccaeec010000000000ffffffff02c0270900000000001976a914e7b528dec5f14d053d6f32d8508ccb287932c43188ac70f30500000000001976a914975f87b998f171ee6c6426e2b018414d2abec50f88ac00000000
+{
+  "txid": "88f124d1cc2198c8103cfb707849f091589734a42413baf2323936463e905f53",
+  "size": 119,
+  "version": 1,
+  "locktime": 0,
+  "vin": [
+    {
+      "txid": "01ecaecc96b148589be10ef3f8fffc70dcc14970ed77144a787c087dfcd0b5e2",
+      "vout": 0,
+      "scriptSig": {
+        "asm": "",
+        "hex": ""
+      },
+      "sequence": 4294967295
+    }
+  ],
+  "vout": [
+    {
+      "value": 0.00600000,
+      "n": 0,
+      "scriptPubKey": {
+        "asm": "OP_DUP OP_HASH160 e7b528dec5f14d053d6f32d8508ccb287932c431 OP_EQUALVERIFY OP_CHECKSIG",
+        "hex": "76a914e7b528dec5f14d053d6f32d8508ccb287932c43188ac",
+        "reqSigs": 1,
+        "type": "pubkeyhash",
+        "addresses": [
+          "1N8A7WLw4TA8Vbu6GQ9JSotbvtTPY5uKhf"
+        ]
+      }
+    }, 
+    {
+      "value": 0.00390000,
+      "n": 1,
+      "scriptPubKey": {
+        "asm": "OP_DUP OP_HASH160 975f87b998f171ee6c6426e2b018414d2abec50f OP_EQUALVERIFY OP_CHECKSIG",
+        "hex": "76a914975f87b998f171ee6c6426e2b018414d2abec50f88ac",
+        "reqSigs": 1,
+        "type": "pubkeyhash",
+        "addresses": [
+          "1EoPUX89wRFGHRNGJFTzqfNcRgdzgs5JhK"
+        ]
+      }
+    }
+  ]
+}
 ```
 
 Parece tudo certo. E, como pode ver, o ```scriptSig``` desta transação está vazio, pois não assinamos ainda. Sem a assinatura digital, esta transação é apenas um *template* que qualquer um poderia ter formado sem valor financeiro algum. Nós precisamos da assinatura para destrancar os *inputs* que estamos usando na transação e antes devemos destrancar a carteira com a senha para podermos expor a chave privada para a assinatura:
@@ -596,15 +797,62 @@ $ bitcoin-cli walletpassphrase naouseestasenhaidiota 200
 E assinamos...
 
 ```
-$ bitcoin-cli signrawtransaction [RAW TX PLACEHOLDER]
-[SIGNED RAW TX PLACEHOLDER]
+$ bitcoin-cli signrawtransaction 
+{
+  "hex": "0100000001e2b5d0fc7d087c784a1477ed7049c1dc70fcfff8f30ee19b5848b196ccaeec01000000006a47304402205984d90f15c019c0804ae140613f6ab5819bd44b6e1faa08cf9aba39655d32f802202b3e5f40dd0f7c8b17381cfff466fae17f7c80e20190ce0caf81962389b80aaf0121039e129c7aec71c34073909fa428982674d305f984fbbc4acda68046a9cd07598bffffffff02c0270900000000001976a914e7b528dec5f14d053d6f32d8508ccb287932c43188ac70f30500000000001976a914975f87b998f171ee6c6426e2b018414d2abec50f88ac00000000",
+  "complete": true
+}
 ```
 
 Agora temos a transação assinada, retornada pelo ```signrawtransaction``` como podemos verificar com o ```decoderawtransaction```:
 
 ```
-$ bitcoin-cli decoderawtransaction [SIGNED RAW TX PLACEHOLDER]
-[DECODED SIGNED RAW TX PLACEHOLDER]
+$ bitcoin-cli decoderawtransaction 0100000001e2b5d0fc7d087c784a1477ed7049c1dc70fcfff8f30ee19b5848b196ccaeec01000000006a47304402205984d90f15c019c0804ae140613f6ab5819bd44b6e1faa08cf9aba39655d32f802202b3e5f40dd0f7c8b17381cfff466fae17f7c80e20190ce0caf81962389b80aaf0121039e129c7aec71c34073909fa428982674d305f984fbbc4acda68046a9cd07598bffffffff02c0270900000000001976a914e7b528dec5f14d053d6f32d8508ccb287932c43188ac70f30500000000001976a914975f87b998f171ee6c6426e2b018414d2abec50f88ac00000000
+{
+  "txid": "51cf064af1e25c9a7a299bd3fec3a7a41f318febd17c661656c5134f2ca63044",
+  "size": 225,
+  "version": 1,
+  "locktime": 0,
+  "vin": [
+    {
+      "txid": "01ecaecc96b148589be10ef3f8fffc70dcc14970ed77144a787c087dfcd0b5e2",
+      "vout": 0,
+      "scriptSig": {
+        "asm": "304402205984d90f15c019c0804ae140613f6ab5819bd44b6e1faa08cf9aba39655d32f802202b3e5f40dd0f7c8b17381cfff466fae17f7c80e20190ce0caf81962389b80aaf[ALL] 039e129c7aec71c34073909fa428982674d305f984fbbc4acda68046a9cd07598b",
+        "hex": "47304402205984d90f15c019c0804ae140613f6ab5819bd44b6e1faa08cf9aba39655d32f802202b3e5f40dd0f7c8b17381cfff466fae17f7c80e20190ce0caf81962389b80aaf0121039e129c7aec71c34073909fa428982674d305f984fbbc4acda68046a9cd07598b"
+      },
+      "sequence": 4294967295
+    }
+  ],
+  "vout": [
+    {
+      "value": 0.00600000,
+      "n": 0,
+      "scriptPubKey": {
+        "asm": "OP_DUP OP_HASH160 e7b528dec5f14d053d6f32d8508ccb287932c431 OP_EQUALVERIFY OP_CHECKSIG",
+        "hex": "76a914e7b528dec5f14d053d6f32d8508ccb287932c43188ac",
+        "reqSigs": 1,
+        "type": "pubkeyhash",
+        "addresses": [
+          "1N8A7WLw4TA8Vbu6GQ9JSotbvtTPY5uKhf"
+        ]
+      }
+    }, 
+    {
+      "value": 0.00390000,
+      "n": 1,
+      "scriptPubKey": {
+        "asm": "OP_DUP OP_HASH160 975f87b998f171ee6c6426e2b018414d2abec50f OP_EQUALVERIFY OP_CHECKSIG",
+        "hex": "76a914975f87b998f171ee6c6426e2b018414d2abec50f88ac",
+        "reqSigs": 1,
+        "type": "pubkeyhash",
+        "addresses": [
+          "1EoPUX89wRFGHRNGJFTzqfNcRgdzgs5JhK"
+        ]
+      }
+    }
+  ]
+}
 ```
 
 Okay, nosso *input* agora tem o ```scriptSig``` preenchido e passa a ter valor real. Só assim ela pode ser verificada e validada pelos outros nós na rede.
@@ -612,8 +860,9 @@ Okay, nosso *input* agora tem o ```scriptSig``` preenchido e passa a ter valor r
 Finalmente, vamos enviar a transação assinada para a rede com ```sendrawtransaction``` para que a rede conheça e propague nossa transação:
 
 ```
-$ bitcoin-cli sendrawtransaction [SINGED RAW TX PLACEHOLDER]
-[TXID PLACEHOLDER]
+$ bitcoin-cli sendrawtransaction 0100000001e2b5d0fc7d087c784a1477ed7049c1dc70fcfff8f30ee19b5848b196ccaeec01000000006a47304402205984d90f15c019c0804ae140613f6ab5819bd44b6e1faa08cf9aba39655d32f802202b3e5f40dd0f7c8b17381cfff466fae17f7c80e20190ce0caf81962389b80aaf0121039e129c7aec71c34073909fa428982674d305f984fbbc4acda68046a9cd07598bffffffff02c0270900000000001976a914e7b528dec5f14d053d6f32d8508ccb287932c43188ac70f30500000000001976a914975f87b998f171ee6c6426e2b018414d2abec50f88ac00000000
+
+51cf064af1e25c9a7a299bd3fec3a7a41f318febd17c661656c5134f2ca63044
 ```
 
 Agora temos o *hash* desta transação (*txid*) e podemos usar sobe ele os mesmos comandos que usamos com outras transações para olhar cada detalhe desta transação. Vale lembrar que, atualmente, este *txid* ainda pode mudar até que esta transação seja incluída na blockchain com o *txid* final.
@@ -622,25 +871,65 @@ Uma última coisa a se reparar é o fato de o Bitcoin, diferente de cartões de 
 
 #### Blocos
 
-Você também pode explorar blocos com utilizando a API JSON-RPC do Core. Vejamos o bloco da transação de 0.010 btc recebida usando o comando ```getblock``` com o *hash* do bloco como parâmetro (presente na transação após confirmada):
+Você também pode explorar blocos com a API JSON-RPC do Core. Vejamos o bloco da transação de 0.010 btc recebida usando o comando ```getblock``` com o *hash* do bloco como parâmetro (presente na transação após confirmada):
 
 ```
-$ bitcoin-cli getblock [BLOCK HASH PLACEHOLDER]
-[BLOCK PLACEHOLDER]
+$ bitcoin-cli getblock 0000000000000000042e065b770fb46aba51bd389d086a1a2a47c5d9e5ffe575
+{
+  "hash": "0000000000000000042e065b770fb46aba51bd389d086a1a2a47c5d9e5ffe575",
+  "confirmations": 6,
+  "size": 998202,
+  "height": 410350,
+  "version": 805306368,
+  "merkleroot": "df4984d291da6a74e2fad8f88f2df313c153815b3a11420403f72b2707b061ef",
+  "tx": [
+    "3f3de9824ef4fd1f65f8335e2022db559547dc8a6377124f1ef585bddfeef63e", 
+    "9733a90a77833f51886884f76cb50a3ca358615d3b28193ad51e4d3668b6de83", 
+    #  [... Muito mais transações ...]
+    "76eb383c8a198b3ab56b4d469bb759e8ac75f04dc5e8e3a59b39c55bef93afcb", 
+    "01ecaecc96b148589be10ef3f8fffc70dcc14970ed77144a787c087dfcd0b5e2", <--- Nossa transação recebida
+    "3c48a57facd63881c4df869a680f73ed751e2a9d00ff16dd5dfcbe54b61bfa23", 
+    # [... Muito mais transações ...]
+  ],
+  "time": 1462453539,
+  "mediantime": 1462448476,
+  "nonce": 1818589289,
+  "bits": "18062776",
+  "difficulty": 178659257772.5273,
+  "chainwork": "0000000000000000000000000000000000000000001858c55a5df5a426cda2d0",
+  "previousblockhash": "0000000000000000021ff8d9b19b4b760670d593e2958a4410880dc6ce14f05a",
+  "nextblockhash": "00000000000000000520dd8c8ca2ce480d6bceee1d51916f9befbba0e00d0359"
+}
 ```
 
 Para pegarmos o *hash* de um bloco pela *height* (ou altura) dele na blockchain, usamos o comando ```getblockhash``` e o índice do bloco como parâmetro. A altura ou indíce do primeiro bloco é 0 e, desde então, a cada novo bloco ela é incrementada. Para vermos o famoso bloco *genesis* minerado por Satoshi Nakamoto, basta que usemos o parâmetro 0:
 
 ```
 $ bitcoin-cli getblockhash 0
-[BLOCK HASH PLACEHOLDER]
+000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f
 ```
 
 E agora podemos usar o comando anterior ```getblock``` com o *hash* retornado como parâmetro:
 
 ```
-$ bitcoin-cli getblock [BLOCK HASH PLACEHOLDER]
-[BLOCK PLACEHOLDER]
+$ bitcoin-cli getblock 000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f
+{
+    "hash" : "000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f",
+    "confirmations" : 286388,
+    "size" : 285,
+    "height" : 0,
+    "version" : 1,
+    "merkleroot" : "4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b",
+    "tx" : [
+        "4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b"
+    ],
+    "time" : 1231006505,
+    "nonce" : 2083236893,
+    "bits" : "1d00ffff",
+    "difficulty" : 1.00000000,
+    "chainwork" : "0000000000000000000000000000000000000000000000000000000100010001",
+    "nextblockhash" : "00000000839a8e6886ab5951d76f411475428afc90947ee320161bbf18eb6048"
+}
 ```
 
 Os comandos ```gettransaction```, ```getblock``` e ```getblockhash``` tem tudo o que você precisa para explorar a blockchain com o Bitcoin Core passando de uma transação para outra e de um bloco para outro como necessário.
