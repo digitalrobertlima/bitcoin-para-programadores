@@ -14,7 +14,7 @@ Para a geração segura de uma chave privada, primeiro precisamos de uma fonte s
 
 <span style="color: #a94442;">**ATENÇÃO!**</span> Como programador(a) é a sua responsabilidade conhecer e entender a ferramenta que você estiver utilizando para a geração de números aleatórios criptograficamente seguros (*cryptographically secure pseudo-random number generator* - CSPRNG). Não use uma técnica própria desconhecida ao resto do mundo mesmo que você tenha a capacidade de cria uma técnica razoavelmente segura - parte fundamental na segurança de um algoritmo deste tipo é o fato de ele ter sido revisado por muitos especialistas e utilizado em "batalha" ao longo de muitos anos. Não confie nem mesmo nas ferramentas que eu apontar sem que você entenda porque elas são seguras e/ou que você possa verificar ampla confiança consolidada de outros especialistas nestas ferramentas. Dito isto, voltemos ao material...
 
-Em Python, podemos utilizar o ```os.urandom``` que coleta bytes a partir do ```/dev/urandom``` em sistema UNIX e ```cryptGenRandom()``` no Windows para geração da chave privada em bytes:
+Em Python, podemos utilizar o ```os.urandom``` que coleta *bytes* a partir do ```/dev/urandom``` em sistema UNIX e ```cryptGenRandom()``` no Windows para geração da chave privada em *bytes*:
 
 ```
 import os
@@ -32,6 +32,42 @@ privkey_int = int.from_bytes(privkey, byteorder='little')
 0xe87e8404367368d0494480916d2580be6efcdf67894aebfcdf7cc3056863fb9a
 ```
 
-Agora temos 32 *bytes* (ou 256 *bits*) coletados. Certamente nenhum dos formatos mostrados parece com o que costumamos ler ao pedir que uma carteira exporte a chave privada para nós. Isso ocorre porque diferentemente de quando estamos passando informação pelos cabos, utilizamos um formato especial chamado WIF.
+Agora temos 32 *bytes* (ou 256 *bits*) coletados. Certamente nenhum dos formatos mostrados parece com o que costumamos ler ao pedir que uma carteira exporte a chave privada para nós. Isto ocorre porque, diferente de quando estamos passando informação pelos cabos, costumamos utilizar um formato especial chamado WIF.
 
-**WIF**: este é o formato que costumamos ler e é abreviação para *Wallet Import Format* (Formato de Importação de Carteira).
+**WIF**: este é o formato que costumamos ler e é abreviação para *Wallet Import Format* (Formato de Importação de Carteira). Este formato é usado para facilitar a leitura e cópia das chaves por humanos. O processo é simples: pegamos a chave privada, concatenamos o *byte* ```0x80``` para ```mainet``` ou ```0xef``` para a ```testnet``` como prefixo e o *byte* ```0x01``` como sufixo se a chave privada for corresponder a uma chave pública comprimida - uma forma de representar chaves públicas usando menos espaço -, realizamos uma função *hash* SHA-256 duas vezes seguidas - comumente referido como *shasha* -, pegamos os 4 primeiros *bytes* do resultado - este é o *checksum* -, adicionamos estes 4 *bytes* ao final do resultado da chave pública antes do *shasha* e, então, usamos a funcão *Base58Check* para codificar o resultado final.
+
+**Base58Check**: é uma versão modificada da função de Base58 utilizada no Bitcoin para codificar chaves e endereços na rede para produzir um formato que facilita a digitação por humanos, assim como diminui drasticamente a chance de erros na digitação.
+
+Então, vamos pegar a chave privada que criamos e transformar ela para o formato WIF. Ao finalizarmos, como teste do resultado, pegue a chave no formato WIF e importe ela em algum *software* de carteira e verá que a sua carteira criará endereços a partir desta chave privada normalmente. Aqui está uma forma como podemos transformar a chave privada que obtivemos acima para o formato WIF:
+
+```
+import hashlib
+from base58 import b58encode
+
+# definimos a dupla rodada de sha-256 para melhorar a legibilidade...
+def shasha(data):
+    """SHA256(SHA256(data)) -> HASH object"""
+    result = hashlib.sha256(hashlib.sha256(data).digest())
+    return result
+
+# agora criamos a função que passará a chave para formato WIF...
+def privkey_to_wif(rawkey, compressed=True):
+    """Converte os bytes da chave privada para WIF"""
+    k = b'\x80' + rawkey  # adicionamos o prefixo da mainet
+
+    # por padrão criamos formado comprimido
+    if compressed:
+        k += b'\x01'  # sufixo para indicar chave comprimida
+
+    checksum = shasha(k).digest()[:4]  # os primeiros 4 bytes da chave como checksum
+    key = k + checksum
+
+    b58key = b58encode(key)
+    return b58key
+
+# agora podemos usar a função privkey_to_wif com a nossa chave privada
+# privkey obtida no exemplo anterior
+privkey_wif = privkey_to_wif(privkey)
+print(privkey_wif)
+# L2QyYCh5nFDe4yRX8hBRMhAGNnHYQmyrWbH1HT7YJohYULHbthxg
+```
