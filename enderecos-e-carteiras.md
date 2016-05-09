@@ -27,6 +27,7 @@ privkey_int = int.from_bytes(privkey, byteorder='little')
 >>> print(privkey_int)
 105160114745571781986276553867283233264261203826988260355664227503456152451994
 # e em hexadecimal como é comum ser enviado e recebido pelos cabos...
+# (obviamente, em sistema seguros e de seu controle caso seja REALMENTE necessário)
 >>> privkey_hex = hex(privkey_int)
 >>> print(privkey_hex)
 0xe87e8404367368d0494480916d2580be6efcdf67894aebfcdf7cc3056863fb9a
@@ -71,3 +72,27 @@ privkey_wif = privkey_to_wif(privkey)
 print(privkey_wif)
 # L2QyYCh5nFDe4yRX8hBRMhAGNnHYQmyrWbH1HT7YJohYULHbthxg
 ```
+
+Este é o formato final que nos permite importar para as carteiras que permitem este tipo de operação. Note este mesmo formato ssendo exportado pelo Bitcoin Core, por exemplo, com o comando ```dumpprivkey```:
+
+```
+$ bitcoin-cli getnewaddress
+193AUxttHmHQLajJ1pnHMvk5d9WvbuvvFR
+$ bitcoin-cli dumpprivkey "193AUxttHmHQLajJ1pnHMvk5d9WvbuvvFR"
+KxBBVbkgku7f5XudmAizo51h8pfBTHDhL1u167EMgKS7PK3bnrwc
+```
+
+### Geração da Chave Pública
+
+Aqui é onde faremos a primeira operação exclusiva de Criptografia de Chave Pública ao usarmos o ECDSA (*Elliptic Curve Digital Signature Algorithm*) para gerarmos a nossa chave pública a partir da chave privada que criamos anteriormente. Para este tipo de operação, recomendo que utilize *libraries* como [python-ecsda](https://github.com/warner/python-ecdsa), [secp256k1-py](https://github.com/ludbb/secp256k1-py) (*binding* direto com a [secp256k1](https://github.com/bitcoin-core/secp256k1) escrita em C) ou alguma *lib* já bem utilizada em produção na sua linguagem de preferência - melhor ajudar a melhorar estas *libs* do que fazer uma nova implementação à toa e apresentar um novo risco sem benefício. Mas, para nosso fim didático deste material, vamos ver como calculamos a chave pública a partir da chave privada em Python para simplificar a visualização e entendimento.
+
+<span style="color: #a94442;">**ATENÇÃO!**</span> O código abaixo é uma versão útil apenas como referência didática. Não recomendo que use este código em produção de forma alguma! Este código não foi testado e revisado como necessário para os padrões de segurança compatíveis com criptografia, e, provavelmente, há mais razões para não fazer cálculos criptográficos em puro Python do que átomos no Universo observável. **VOCÊ FOI AVISADO(A)**.
+
+Agora que você sabe que é uma péssima ideia usar o código abaixo em qualquer ambiente de produção com valores reais, podemos continuar com a geração da chave pública. Já tendo a chave privada que criamos acima na variável ```privkey```...
+
+```
+>>> print(privkey)
+b'\x9a\xfbch\x05\xc3|\xdf\xfc\xebJ\x89g\xdf\xfcn\xbe\x80%m\x91\x80DI\xd0hs6\x04\x84~\xe8'
+```
+
+Comecemos a dissecar os cálculos necessários o algoritmo e implementar passo-a-passo.
