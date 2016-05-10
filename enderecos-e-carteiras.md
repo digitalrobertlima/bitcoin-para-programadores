@@ -86,13 +86,111 @@ KxBBVbkgku7f5XudmAizo51h8pfBTHDhL1u167EMgKS7PK3bnrwc
 
 Aqui é onde faremos a primeira operação exclusiva de Criptografia de Chave Pública ao usarmos o ECDSA (*Elliptic Curve Digital Signature Algorithm*) para gerarmos a nossa chave pública a partir da chave privada que criamos anteriormente. Para este tipo de operação, recomendo que utilize *libraries* como [python-ecsda](https://github.com/warner/python-ecdsa), [secp256k1-py](https://github.com/ludbb/secp256k1-py) (*binding* direto com a [secp256k1](https://github.com/bitcoin-core/secp256k1) escrita em C) ou alguma *lib* já bem utilizada em produção na sua linguagem de preferência - melhor ajudar a melhorar estas *libs* do que fazer uma nova implementação à toa e apresentar um novo risco sem benefício. Mas, para nosso fim didático deste material, vamos ver como calculamos a chave pública a partir da chave privada em Python para simplificar a visualização e entendimento.
 
-<span style="color: #a94442;">**ATENÇÃO!**</span> O código abaixo é uma versão útil apenas como referência didática. Não recomendo que use este código em produção de forma alguma! Este código não foi testado e revisado como necessário para os padrões de segurança compatíveis com criptografia, e, provavelmente, há mais razões para não fazer cálculos criptográficos em puro Python do que átomos no Universo observável. **VOCÊ FOI AVISADO(A)**.
+<span style="color: #a94442;">**ATENÇÃO!**</span> O código abaixo é uma versão útil apenas como referência didática. Não recomendo que use este código em produção de forma alguma! Este código não foi testado e revisado como necessário para os padrões de segurança compatíveis com criptografia, e, provavelmente, há mais razões para não fazer operações criptográficas em puro Python do que átomos no Universo observável. **VOCÊ FOI AVISADO(A)**.
 
-Agora que você sabe que é uma péssima ideia usar o código abaixo em qualquer ambiente de produção com valores reais, podemos continuar com a geração da chave pública. Já tendo a chave privada que criamos acima na variável ```privkey```...
+Agora que você sabe que é uma péssima ideia usar o código abaixo em qualquer ambiente de produção com valores reais, podemos continuar com a geração da chave pública. Já tendo a chave privada que criamos acima na variável ```privkey``` que será utilizada ao longo deste exemplo:
 
 ```
 >>> print(privkey)
 b'\x9a\xfbch\x05\xc3|\xdf\xfc\xebJ\x89g\xdf\xfcn\xbe\x80%m\x91\x80DI\xd0hs6\x04\x84~\xe8'
 ```
 
-Comecemos a dissecar os cálculos necessários o algoritmo e implementar passo-a-passo.
+Como comentado anteriormente, o Bitcoin utiliza a implementação de Curva Elíptica secp256k1 definida pela equação ```y^2 == x^3 + 7 (mod p)``` sendo ```p = 2^256 - 2^32 - 977```. A curva elíptica que estamos trabalhando pode ser representada por:
+
+[EC IMG PLACEHOLDER]
+
+Para que calculemos a curva usada em nosso esquema de criptografia de chave pública, temos que ter o poder de duas operações: Adição e multiplicação de pontos. A utilidade deste método para o fim que pretendemos começa a ser visualizada aqui ao perceber que as únicas operações que podemos fazer com pontos são adição e multiplicação. Observe, por exemplo, como fazemos para adicionar pontos:
+
+[EC ADD OPERATION IMG PLACEHOLDER]
+
+Para adicionarmos o Ponto A ao Ponto B de uma curva como esta, primeiro desenhamos uma linha entre os dois pontos A e B, esta linha fará uma interseção com um terceiro ponto * na curva, então só precisamos refletir esta interseção passando pelo eixo x para que tenhamos o resultado da soma dos pontos A e B:
+
+[EC ADD OPERATION IMG PLACEHOLDER with EVIDENT POINTS]
+
+E para adicionarmos um mesmo ponto A a ele mesmo, nós desenhamos uma linha tangencial à curva tocando no Ponto A, esta linha terá uma interseção com a curva formando um segundo ponto, daí basta que façamos a reflexão como no primeiro caso e achamos o resultado de ```2 * Ponto A```:
+
+[EC ADD OPERATION IMG PLACEHOldER with EVIDENT POINTS]
+
+Como multiplicação nada mais é do que adicionar um mesmo valor por ele *n* vezes, nós já temos o que precisamos para realizar as operações necessárias e que podem ser derivadas pelas seguintes equações:
+
+[EQUATION IMG PLACEHOlder]
+
+Para obtermos a chave pública, a operação que faremos será a multiplicação da nossa chave privada ```privkey``` por um ponto inicial definido pela implementação da curva conhecido por todos. Este ponto se chama Ponto Gerador (abreviado como G em futuras referências) e na secp256k1, ele é:
+
+```
+Gx = 55066263022277343669578718895168534326250603453777594175500187360389116729240
+Gy = 32670510020758816978083085130507043184471273380659243275938904335757337482424
+```
+
+Sim, os números precisam ser gigantes para que este tipo de esquema criptográfico seja seguro. Como nota de curiosidade, o número total de chaves privadas possíveis no Bitcoin é algo em torno de 2**256; isto é um número de grandeza comparável com o número estimado de átomos no Universo observável (sim, de verdade) que está entre 10**77 e 10**82.
+
+A nossa chave pública, então, será o ponto gerado a partir da multiplicação da chave privada por G (```privkey * (Gx, Gy)```). Assim, temos que implementar uma multiplicação escalar para multiplicarmos  a ```privkey``` como ```int``` pelo vetor G implementado como um ```set```. Vamos abstrair esta operação em quatro funções: uma para calcular a inversa modular de ```x (mod p)```, uma para a dobra de pontos - ou seja, a soma de um ponto por ele mesmo -, mais uma para adicionar um ponto a outro ponto qualquer e uma outra função para multiplicar um ponto por valores arbitrários:
+
+```
+# primeiro vamos definir o "p" da fórmula usada no bitcoin "y^2 == x^3 + 7 (mod p)"
+p = 2**256 - 2**32 - 977
+
+# definimos a função para calcular a inversa modular de x (mod p)...
+def modular_inverse(x, p):
+    inverse1 = 1
+    inverse2 = 0
+    while p != 1 and p != 0:
+        inverse1, inverse2 = inverse2, inverse1 - inverse2 * (x / p)
+        x, p = p, x % p
+    return inverse2
+
+# agora definimmos nossa função para dobra de ponto - adicionar um ponto a ele próprio...
+def double_point(point, p):
+    if point is None:
+        return None
+    (x, y) = point
+    if y == 0:
+        return None
+
+    incl = 3 * pow(x, 2, p) * modular_inverse(2*y, p)
+    
+    sum_x = pow(incl, 2, p) - 2 * x
+    sum_y = incl * (x - sum_x) - y
+    return (sum_x % p, sum_y % p)
+
+# definimos, agora, a adição de pontos entre si (p1 + p2)
+def add_points(p1, p2, p):
+    if p1 is None or p2 is None:
+        return None
+    (x1, y1) = p1
+    (x2, y2) = p2
+
+    # caso x1 e x2 sejam iguais, sabemos que basta dobrar o ponto, visto que y será o mesmo na curva
+    if x1 == x2:
+        return double_point(p1, p)
+
+    incl = (y1 - y2) * modular_inverse(x1 - x2, p)
+    sum_x = pow(incl, 2, p) - (x1 + x2)
+    sum_y = incl * (x1 - sum_x) - y1
+    return (sum_x % p, sum_y % p)
+
+# e finalmente nossa multiplicação do ponto p por a abstraída como pt sendo somado por ele mesmo "a" vezes
+def point_mul(point, a, p):
+    scale = point
+    acc = None
+    while a:
+        if a & 1:
+            if acc is None:
+                acc = scale
+            else:
+                acc = add_points(acc, scale, p)
+        scale = double_point(scale, p)
+        a >>= 1
+    return acc
+```
+
+Agora utilizamos estas funções com os valores que temos da ```privkey``` em ```hex```junto com as coordenadas de G também em ```hex```:
+
+```
+privkey = 0xe87e8404367368d0494480916d2580be6efcdf67894aebfcdf7cc3056863fb9a
+g = (0x79BE667EF9DCBBAC55A06295CE870B07029BFCDB2DCE28D959F2815B16F81798,
+     0x483ADA7726A3C4655DA4FBFC0E1108A8FD17B448A68554199C47D08FFB10D4B8)
+
+pubkey = point_mul(g, privkey, p)
+print(pubkey)
+```
