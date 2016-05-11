@@ -208,7 +208,7 @@ g = (g_x, g_y)
 pubkey = point_mul(g, privkey, p)
 print("%x, %x" % (pubkey[0], pubkey[1]))
 # Com os valores acima, print deve imprimir as coordenadas da nossa chave pública na curva que é:
-# 7552362163af8aaabdda4c6d132b2f7789c4c7bd8f5b4e9df39dfb75f6e95111, f01e238737efce1c9357f32d1c38732f07dc4eed533f94c3623d995fb0d2028e
+# 273f9c55a1c8976f87032aade62b794df31e64327386b403d7438c735b2f7c89, 9848db72f0b79646364e508d0f591d3a80541f8138f44722ada5220608f79805
 ```
 
 Agora que temos a chave pública correspondente à nossa chave privada, podemos gerar o nosso endereço bitcoin.
