@@ -124,53 +124,66 @@ Gy = 326705100207588169780830851305070431844712733806592432759389043357573374824
 
 Sim, os números precisam ser gigantes para que este tipo de esquema criptográfico seja seguro. Como nota de curiosidade, o número total de chaves privadas possíveis no Bitcoin é algo em torno de 2**256; isto é um número de grandeza comparável com o número estimado de átomos no Universo observável (sim, de verdade) que está entre 10**77 e 10**82.
 
-A nossa chave pública, então, será o ponto gerado a partir da multiplicação da chave privada por G (```privkey * (Gx, Gy)```). Assim, temos que implementar uma multiplicação escalar para multiplicarmos  a ```privkey``` como ```int``` pelo vetor G implementado como um ```set```. Vamos abstrair esta operação em quatro funções: uma para calcular a inversa modular de ```x (mod p)```, uma para a dobra de pontos - ou seja, a soma de um ponto por ele mesmo -, mais uma para adicionar um ponto a outro ponto qualquer e uma outra função para multiplicar um ponto por valores arbitrários:
+A nossa chave pública, então, será o ponto gerado a partir da multiplicação da chave privada por G (```privkey * (Gx, Gy)```). Assim, temos que implementar uma multiplicação escalar para multiplicarmos  a ```privkey``` como ```int``` pelo vetor G implementado como um ```set```. Vamos abstrair esta operação em quatro funções: uma para calcular a inversa modular de ```x (mod p)```, uma para caluclar o dobro de um ponto - ou seja, a soma de um ponto por ele mesmo -, mais uma para adicionar um ponto a outro ponto qualquer e uma outra função para multiplicar um ponto por valores arbitrários (no caso, a chave privada):
 
 ```
 # primeiro vamos definir o "p" da fórmula usada no bitcoin "y^2 == x^3 + 7 (mod p)"
 p = 2**256 - 2**32 - 977
 
-# definimos a função para calcular a inversa modular de x (mod p)...
-def modular_inverse(x, p):
-    inverse1 = 1
-    inverse2 = 0
-    while p != 1 and p != 0:
-        inverse1, inverse2 = inverse2, inverse1 - inverse2 * (x / p)
-        x, p = p, x % p
-    return inverse2
+def inverse(x, p):
+    """
+    Calcula inversa modular de x (mod p)
 
-# agora definimmos nossa função para dobra de ponto - adicionar um ponto a ele próprio...
+    A inversa modular de um número é definida:
+
+    (inverse(x, p) * x) == 1
+    """
+    inv1 = 1
+    inv2 = 0
+    while p != 1 and p != 0:
+        inv1, inv2 = inv2, inv1 - inv2 * (x // p)
+        x, p = p, x % p
+
+    return inv2
+
+
 def double_point(point, p):
-    if point is None:
-        return None
+    """
+    Calcula point + point (== 2 * point)
+    """
     (x, y) = point
     if y == 0:
         return None
 
-    incl = 3 * pow(x, 2, p) * modular_inverse(2*y, p)
-    
-    sum_x = pow(incl, 2, p) - 2 * x
-    sum_y = incl * (x - sum_x) - y
-    return (sum_x % p, sum_y % p)
+    # Calculate 3*x^2/(2*y)  modulus p
+    slope = 3*pow(x, 2, p) * inverse(2 * y, p)
 
-# definimos, agora, a adição de pontos entre si (p1 + p2)
-def add_points(p1, p2, p):
-    if p1 is None or p2 is None:
-        return None
+    xsum = pow(slope, 2, p) - 2 * x
+    ysum = slope * (x - xsum) - y
+    return (xsum % p, ysum % p)
+
+
+def add_point(p1, p2, p):
+    """
+    Calcula p1 + p2
+    """
     (x1, y1) = p1
     (x2, y2) = p2
-
-    # caso x1 e x2 sejam iguais, sabemos que basta dobrar o ponto, visto que y será o mesmo na curva
     if x1 == x2:
         return double_point(p1, p)
 
-    incl = (y1 - y2) * modular_inverse(x1 - x2, p)
-    sum_x = pow(incl, 2, p) - (x1 + x2)
-    sum_y = incl * (x1 - sum_x) - y1
-    return (sum_x % p, sum_y % p)
+    # calcula (y1-y2)/(x1-x2)  modulo p
+    # slope é o coeficiente angular da curva
+    slope = (y1 - y2) * inverse(x1 - x2, p)
+    xsum = pow(slope, 2, p) - (x1 + x2)
+    ysum = slope * (x1 - xsum) - y1
+    return (xsum % p, ysum % p)
 
-# e finalmente nossa multiplicação do ponto p por a abstraída como pt sendo somado por ele mesmo "a" vezes
+
 def point_mul(point, a, p):
+    """
+    Multiplicação escalar: calcula point * a
+    """
     scale = point
     acc = None
     while a:
@@ -178,19 +191,28 @@ def point_mul(point, a, p):
             if acc is None:
                 acc = scale
             else:
-                acc = add_points(acc, scale, p)
+                acc = add_point(acc, scale, p)
         scale = double_point(scale, p)
         a >>= 1
     return acc
 ```
 
-Agora utilizamos estas funções com os valores que temos da ```privkey``` em ```hex```junto com as coordenadas de G também em ```hex```:
+Agora utilizamos estas funções com os valores que temos da ```privkey``` e as coordenadas de G escritas em hexadecimal em ```int```:
 
 ```
 privkey = 0xe87e8404367368d0494480916d2580be6efcdf67894aebfcdf7cc3056863fb9a
-g = (0x79BE667EF9DCBBAC55A06295CE870B07029BFCDB2DCE28D959F2815B16F81798,
-     0x483ADA7726A3C4655DA4FBFC0E1108A8FD17B448A68554199C47D08FFB10D4B8)
+g_x = 0x79BE667EF9DCBBAC55A06295CE870B07029BFCDB2DCE28D959F2815B16F81798
+g_y = 0x483ADA7726A3C4655DA4FBFC0E1108A8FD17B448A68554199C47D08FFB10D4B8
+g = (g_x, g_y)
 
 pubkey = point_mul(g, privkey, p)
-print(pubkey)
+print("%x, %x" % (pubkey[0], pubkey[1]))
+# Com os valores acima, print deve imprimir as coordenadas da nossa chave pública na curva que é:
+# 7552362163af8aaabdda4c6d132b2f7789c4c7bd8f5b4e9df39dfb75f6e95111, f01e238737efce1c9357f32d1c38732f07dc4eed533f94c3623d995fb0d2028e
 ```
+
+Agora que temos a chave pública correspondente à nossa chave privada, podemos gerar o nosso endereço bitcoin.
+
+### Geração do Endereço Bitcoin
+
+
