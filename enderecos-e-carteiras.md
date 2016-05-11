@@ -133,9 +133,7 @@ p = 2**256 - 2**32 - 977
 def inverse(x, p):
     """
     Calcula inversa modular de x (mod p)
-
     A inversa modular de um número é definida:
-
     (inverse(x, p) * x) == 1
     """
     inv1 = 1
