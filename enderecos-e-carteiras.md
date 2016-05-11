@@ -37,7 +37,7 @@ Agora temos 32 *bytes* (ou 256 *bits*) coletados. Certamente nenhum dos formatos
 
 **WIF**: este é o formato que costumamos ler e é abreviação para *Wallet Import Format* (Formato de Importação de Carteira). Este formato é usado para facilitar a leitura e cópia das chaves por humanos. O processo é simples: pegamos a chave privada, concatenamos o *byte* ```0x80``` para ```mainet``` ou ```0xef``` para a ```testnet``` como prefixo e o *byte* ```0x01``` como sufixo se a chave privada for corresponder a uma chave pública comprimida - uma forma de representar chaves públicas usando menos espaço -, realizamos uma função *hash* SHA-256 duas vezes seguidas - comumente referido como *shasha* -, pegamos os 4 primeiros *bytes* do resultado - este é o *checksum* -, adicionamos estes 4 *bytes* ao final do resultado da chave pública antes do *shasha* e, então, usamos a funcão *Base58Check* para codificar o resultado final.
 
-**Base58Check**: é uma versão modificada da função de Base58 utilizada no Bitcoin para codificar chaves e endereços na rede para produzir um formato que facilita a digitação por humanos, assim como diminui drasticamente a chance de erros na digitação.
+**Base58Check**: é uma versão modificada da função de Base58 utilizada no Bitcoin para codificar chaves e endereços na rede para produzir um formato que facilita a digitação por humanos, assim como diminui drasticamente a chance de erros na digitação limitando os endereços a caracteres específicos que não sejam visualmente idênticos em algumas fontes - como 1 e I ou 0 e O - e outros problemas parecidos no envio e recebimento de endereços por humanos.
 
 Então, vamos pegar a chave privada que criamos e transformar ela para o formato WIF. Ao finalizarmos, como teste do resultado, pegue a chave no formato WIF e importe ela em algum *software* de carteira e verá que a sua carteira criará endereços a partir desta chave privada normalmente. Aqui está uma forma como podemos transformar a chave privada que obtivemos acima para o formato WIF:
 
@@ -205,14 +205,86 @@ g_x = 0x79BE667EF9DCBBAC55A06295CE870B07029BFCDB2DCE28D959F2815B16F81798
 g_y = 0x483ADA7726A3C4655DA4FBFC0E1108A8FD17B448A68554199C47D08FFB10D4B8
 g = (g_x, g_y)
 
-pubkey = point_mul(g, privkey, p)
-print("%x, %x" % (pubkey[0], pubkey[1]))
+pub_x, pub_y = point_mul(g, privkey, p)
+print("x: %x, y: %x" % (pub_x, pub_y))
 # Com os valores acima, print deve imprimir as coordenadas da nossa chave pública na curva que é:
 # 273f9c55a1c8976f87032aade62b794df31e64327386b403d7438c735b2f7c89, 9848db72f0b79646364e508d0f591d3a80541f8138f44722ada5220608f79805
 ```
 
-Agora que temos a chave pública correspondente à nossa chave privada, podemos gerar o nosso endereço bitcoin.
+O resultado da final da chave pública no ECDSA é simplesmente as coordenadas da chave pública (32 *bytes* para cada uma) com um *byte* ```0x04``` como sufixo. Podemos simplesmente fazer algo assim:
+
+```
+>>> pubkey = '04' + format(pub_x, 'x') + format(pub_y, 'x')
+>>> print(pubkey)
+04273f9c55a1c8976f87032aade62b794df31e64327386b403d7438c735b2f7c899848db72f0b79646364e508d0f591d3a80541f8138f44722ada5220608f79805
+```
+
+Agora que temos a nossa chave pública, podemos seguir com a geração do endereço Bitcoin correspondente a ela.
 
 ### Gerando o Endereço Bitcoin
 
+Continuando com os valores que conseguimos acima para a nossa chave pública, vamos gerar um endereço Bitcoin de acordo com as regras no protocolo.
 
+Primeiro, pegamos o valor de ```pubkey``` e aplicamos a função *hash* SHA-256 em seu *bytes*:
+
+```
+>>> import codecs
+>>> import hashlib
+
+>>> pubkey_bytes = codecs.decode(pub.encode('utf-8'), 'hex')
+>>> print(pubkey_bytes)
+b'\x04\'?\x9cU\xa1\xc8\x97o\x87\x03*\xad\xe6+yM\xf3\x1ed2s\x86\xb4\x03\xd7C\x8cs[/|\x89\x98H\xdbr\xf0\xb7\x96F6NP\x8d\x0fY\x1d:\x80T\x1f\x818\xf4G"\xad\xa5"\x06\x08\xf7\x98\x05'
+>>> pubkey_sha256 = hashlib.sha256(pubkey_bytes)
+>>> print(pubkey_sha256.hexdigest())
+'d3feedd34006df75cba68a5de79228e4a6956436f46aba74332eeada8ac2ec47'
+```
+
+Segundo, aplicamos a função *hash* RIPEMD-160 no resultado ```pubkey_sha256```:
+
+```
+>>> pubkey_ripe = hashlib.new('ripemd160')
+>>> pubkey_ripe.update(pubkey_sha256.digest())
+>>> print(pubkey_ripe.hexdigest())
+'0fc8aa8b93103a388fd562514ec250be2d403a27'
+```
+Terceiro, adicionamos o byte ```0x00``` para identificar a chave para a *mainet*. De forma simples, podemos:
+
+```
+>>> raw_address = '00' + pubkey_ripe.hexdigest()
+>>> print(raw_address)
+000fc8aa8b93103a388fd562514ec250be2d403a27
+```
+
+E este resultado é o endereço Bitcoin. Guarde-o, pois já usaremos ele novamente. Mais uma vez não se parece com os endereços que costumamos ver e escrever. Isto ocorre porque este é o endereço puro em hexadecimal sem Base58Check. Para termos um endereço com proteção contra erros de digitação como a maioria dos endereços que lidamos no dia-a-dia, seguimos os seguintes passos.
+
+Primeiro vamos pegar um 4 *bytes* para usar como *checksum* fazendo o *shasha* nos bytes do endereço. Como dito acima costumamos chamar de *shasha* quando tiramos um *hash* SHA-256 e passamos este resultado novamente na função *hash* SHA256. Para isso, fazemos:
+
+```
+>>> raw_addr_bytes = codecs.decode(raw_address.encode('utf-8'), 'hex')
+>>> print(raw_addr_bytes)
+b"\x00\x0f\xc8\xaa\x8b\x93\x10:8\x8f\xd5bQN\xc2P\xbe-@:'"
+>>> addr_shasha = hashlib.sha256(hashlib.sha256(raw_addr_bytes).digest())
+>>> print(addr_shasha.hexdigest())
+455a7335c8c121fbb90e22e0dbb77ff3d7137908a052b895d6933f53032b2d27
+# E pegamos os 4 primeiros bytes como checksum
+>>> checksum = addr_shasha.digest()[:4]
+>>> print(checksum)
+b'EZs5'
+# Em hexadecimal...
+>>> checksum = addr_shasha.hexdigest()[:8]
+>>> print(checksum)
+'455a7335'
+```
+
+Agora adicionamos o *checksum* ao final do endereço ```000fc8aa8b93103a388fd562514ec250be2d403a27``` que pegamos um pouco mais acima e, finalmente, passamos os *bytes* pela função para codificar em Base58:
+
+```
+>>> from base58 import b58encode
+>>> address = raw_address + checksum
+>>> addr_bytes = codecs.decode(address.encode('utf-8'), 'hex')
+>>> address = b58encode(addr_bytes)
+>>> print(address)
+12STXQicaWRh4RFfjW6T6y6ZAqQVytTKXa
+```
+
+E este é o endereço que podemos usar para receber transações nos *softwares* de carteira controlado pela chave privada criada no início.
