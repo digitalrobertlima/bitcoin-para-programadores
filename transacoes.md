@@ -35,11 +35,9 @@ A quantia de bitcoins que você tem são apenas uma abstração dos *UTXO* que v
 
 O modo como as transações funcionam, faz com que elas formem uma sucessiva corrente de *inputs* e *outputs* trancando e destrancando valores na rede.
 
-[INPUT/OUTPUT chain image PLACEHOLDER]
+[INPUT/OUTPUT chain image PLACEHOLDER - 0]
 
 Tendo como única exceção as chamadas transações *coinbase* que são as transações criadas pelos mineradores ao incluirem um novo bloco na blockchain (mais detalhes em [Mineração](mineracao.md)) e recolherem o prêmio pelo trabalho.
-
-[coinbase tx image PLACEHOLDER]
 
 Como já dito, é importante lembrar que os *UTXO* quando usados numa nova transação sempre devem ser gastos **completamente**, o que faz que seja comum ter transações com um ou mais endereços de troco da transação já que nem sempre você terá *UTXOs* disponíveis formando o valor exato que deseja enviar para alguma transferência de valor.
 
@@ -81,7 +79,7 @@ A resposta está na linguagem *Script* do Bitcoin. Chamada apenas de *Script* é
 
 Primeiro, vejamos como ambos *scripts* ficam organizados para serem interpretados na validação de uma transação. Cada nó responsável por validar uma transação utiliza o ```scriptPubKey``` do *UTXO* referenciado no *input* atual e utiliza o ```scriptSig``` deste *input* para formar a expressão a ser verificada. Aqui está um exemplo do tipo mais comum de transacão - a *Pay to Pubkey Hash* (*P2PKH*) - em que "enviamos" um certo número de bitcoins para ser gasto pelo detentor da chave privada de outro endereço:
 
-[<sig> <PubK> OP_DUP OP_HASH160 <PubKHash> OP_EQUALVERIFY OP_CHECKSIG - IMAGE PLACEHOLDER]
+[<sig> <PubK> OP_DUP OP_HASH160 <PubKHash> OP_EQUALVERIFY OP_CHECKSIG - IMAGE PLACEHOLDER - 1]
 
 Mas antes de resolvermos esta expressão, vamos visualizar a resolução de uma expressão com operações matemáticas básicas para que entendamos como os *scripts* são interpretados e validados na rede Bitcoin. Tomemos como exemplo este *locking script* contendo apenas operações aritméticas:
 
@@ -99,11 +97,13 @@ A solução para este *script* pode ser dada apenas com:
 
 A explicação para isso é que o programa de validação pega o *locking script* e o *unlocking script* e os coloca juntos numa expressão assim:
 
-[2 7 OP_ADD 3 OP_SUB 6 OP_EQUAL - IMAGE PLACEHOLDER]
+```
+2 7 OP_ADD 3 OP_SUB 6 OP_EQUAL
+```
 
 E a execução desta expressão acontece como na imagem a seguir:
 
-[SCRIPT EXECUTION IMAGE PLACEHOLDER]
+[SCRIPT EXECUTION IMAGE PLACEHOLDER - 2]
 
 Este *unlocking script* satisfaz o "desafio" proposto pelo *locking script* ao retornar TRUE que é representado pelo número 1 em hexadecimal ```0x01```. Caso a solução fosse inválida, ```OP_EQUAL``` retornaria FALSE ou ```0x00``` para a pilha.
 
@@ -116,7 +116,7 @@ Agora, podemos verificar a expressão proposta inicialmente com uma situação c
 
 E a execução deste *P2PKH* fica assim:
 
-[SCRIPT EXECUTION IMAGE PLACEHOLDER]
+[SCRIPT EXECUTION IMAGE PLACEHOLDER - 3]
 
 #### Outros Scripts Comuns
 

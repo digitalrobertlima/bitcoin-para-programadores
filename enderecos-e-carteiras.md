@@ -97,23 +97,19 @@ b'\x9a\xfbch\x05\xc3|\xdf\xfc\xebJ\x89g\xdf\xfcn\xbe\x80%m\x91\x80DI\xd0hs6\x04\
 
 Como comentado anteriormente, o Bitcoin utiliza a implementação de Curva Elíptica secp256k1 definida pela equação ```y^2 == x^3 + 7 (mod p)``` sendo ```p = 2^256 - 2^32 - 977```. A curva elíptica que estamos trabalhando pode ser representada por:
 
-[EC IMG PLACEHOLDER]
+[EC IMG PLACEHOLDER - 4]
 
-Para que calculemos a curva usada em nosso esquema de criptografia de chave pública, temos que ter o poder de duas operações: Adição e multiplicação de pontos. A utilidade deste método para o fim que pretendemos começa a ser visualizada aqui ao perceber que as únicas operações que podemos fazer com pontos são adição e multiplicação. Observe, por exemplo, como fazemos para adicionar pontos:
-
-[EC ADD OPERATION IMG PLACEHOLDER]
+Para que calculemos a curva usada em nosso esquema de criptografia de chave pública, temos que ter o poder de duas operações: Adição e multiplicação de pontos. A utilidade deste método para o fim que pretendemos começa a ser visualizada aqui ao perceber que as únicas operações que podemos fazer com pontos são adição e multiplicação.
 
 Para adicionarmos o Ponto A ao Ponto B de uma curva como esta, primeiro desenhamos uma linha entre os dois pontos A e B, esta linha fará uma interseção com um terceiro ponto * na curva, então só precisamos refletir esta interseção passando pelo eixo x para que tenhamos o resultado da soma dos pontos A e B:
 
-[EC ADD OPERATION IMG PLACEHOLDER with EVIDENT POINTS]
+[EC ADD OPERATION IMG PLACEHOLDER with EVIDENT POINTS - 5]
 
 E para adicionarmos um mesmo ponto A a ele mesmo, nós desenhamos uma linha tangencial à curva tocando no Ponto A, esta linha terá uma interseção com a curva formando um segundo ponto, daí basta que façamos a reflexão como no primeiro caso e achamos o resultado de ```2 * Ponto A```:
 
-[EC ADD OPERATION IMG PLACEHOldER with EVIDENT POINTS]
+[EC ADD OPERATION IMG PLACEHOldER with EVIDENT POINTS - 6]
 
-Como multiplicação nada mais é do que adicionar um mesmo valor por ele *n* vezes, nós já temos o que precisamos para realizar as operações necessárias e que podem ser derivadas pelas seguintes equações:
-
-[EQUATION IMG PLACEHOlder]
+Como multiplicação nada mais é do que adicionar um mesmo valor por ele *n* vezes, nós já temos o que precisamos para realizar as operações necessárias.
 
 Para obtermos a chave pública, a operação que faremos será a multiplicação da nossa chave privada ```privkey``` por um ponto inicial definido pela implementação da curva conhecido por todos. Este ponto se chama Ponto Gerador (abreviado como G em futuras referências) e na secp256k1, ele é:
 
