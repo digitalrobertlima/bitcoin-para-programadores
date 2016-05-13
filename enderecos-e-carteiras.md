@@ -314,4 +314,4 @@ O *software* de carteira mais simples costuma fazer, pelo menos, as operações:
 
 [HD WALLET IMG PLACEHOLDER]
 
-**Próximo capítulo**: [Transações](transacoes.md)
+**Próximo capítulo:** [Transações](transacoes.md)

@@ -954,4 +954,4 @@ O cliente bitcoind do Bitcoin Core é a implementação referência atual, poré
 
 ... e muitas outras.
 
-*Próximo capítulo:* [Endereços e Carteiras](enderecos-e-carteiras.md)
+**Próximo capítulo:** [Endereços e Carteiras](enderecos-e-carteiras.md)
