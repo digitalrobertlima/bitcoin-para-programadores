@@ -7,7 +7,7 @@
 Em tradução livre do repositório da principal implementação atualmente ([Bitcoin Core](https://github.com/bitcoin/bitcoin)):
 
 
->*"Bitcoin é uma nova moeda digital experimental que permite pagamento instantâneo para qualquer pessoa, em qualquer lugar do mundo. Bitcoin usa tecnologia peer-to-peer (P2P) para operar sem autoridade central: a gerência de transações e a emissão de dinheiro é executada coletivamente pela rede. Bitcoin Core é o nome do software open source que habilita o uso desta moeda."*
+> **Quote** *"Bitcoin é uma nova moeda digital experimental que permite pagamento instantâneo para qualquer pessoa, em qualquer lugar do mundo. Bitcoin usa tecnologia peer-to-peer (P2P) para operar sem autoridade central: a gerência de transações e a emissão de dinheiro é executada coletivamente pela rede. Bitcoin Core é o nome do software open source que habilita o uso desta moeda."*
 
 ### Indo um Pouco Além...
 
@@ -80,6 +80,6 @@ Este tipo de assinatura é o que permite que todos na rede possam comprovar que 
 
 Por exemplo, digamos que Maria envia 1 bitcoin para o endereço bitcoin de João e João, por sua vez, envia 1 bitcoin para o endereço de Raphael. Todas estas transações são apenas mensagens que dizem "passar *n* bitcoins de *x* para *y*" e todas estas mensagens precisam ser assinadas por quem a rede considera o atual detentor dos bitcoins para que sejam consideradas válidas e incluidas na blockchain por algum minerador.
 
-Em [Endereços e Carteiras](enderecos-e-carteiras.md), veremos como a chave privada pode ser gerada e como fazemos para derivar a chave pública a partir da chave privada para, finalmente, gerar um endereço Bitcoin. Em [Transações](transacoes.md) veremos como as assinaturas são realmente enxergadas na rede e como assinar transações utilizando os comandos RPC do Bitcoin Core e implementaremos um código Python com o mesmo intuito. E, para caso você queira se aprofundar mais nas abstrações matemáticas que dão à luz esta tecnologia amplamente utilizada atualmente, recomendo: [links list placeholder]
+Em [Endereços e Carteiras](enderecos-e-carteiras.md), veremos como a chave privada pode ser gerada e como fazemos para derivar a chave pública a partir da chave privada para, finalmente, gerar um endereço Bitcoin. Em [Transações](transacoes.md) veremos como as assinaturas são realmente enxergadas na rede e como assinar transações utilizando os comandos RPC do Bitcoin Core. E, para caso você queira se aprofundar mais nas abstrações matemáticas que dão à luz esta tecnologia amplamente utilizada atualmente, recomendo: [links list placeholder]
 
 *Próximo capítulo*: [Bitcoin Core](bitcoin-core.md)
