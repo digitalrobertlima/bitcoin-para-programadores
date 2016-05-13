@@ -8,11 +8,11 @@ Cada endereço é um identificador único na rede; não de uma pessoa como *e-ma
 
 ### Gerando a Chave Privada
 
-A chave privada é um número gerado de forma aleatória. E, além da aleatoriedade na geração deste número, outra qualidade importante para a segurança na implementação deste tipo de criptografia é que a chave privada é um número gigante. Com esta chave, as transações serão assinadas e valores serão transferidos na rede; gerar e manter esta chave de forma segura é **essencial** para a segurança de valores em bitcoin.
+A chave privada é um número gerado de forma aleatória. E além da aleatoriedade na geração deste número, outra qualidade importante para a segurança na implementação deste tipo de criptografia é que a chave privada é um número gigante. Com esta chave, as transações serão assinadas e valores serão transferidos na rede; gerar e manter esta chave de forma segura é **essencial** para a segurança de valores em bitcoin.
 
 Para a geração segura de uma chave privada, primeiro precisamos de uma fonte segura de entropia para geração de uma chave de 256 *bits*. Normalmente, os *softwares* de carteira utilizam uma fonte de coleta de entropia do próprio sistema operacional - como ```/dev/urandom``` em sistemas UNIX ou ```cryptGenRandom()``` no Windows - e isto costuma ser o suficiente, mas para o nível máximo de paranoia é possível que utilizemos métodos físicos que excluem a possibilidade de falhas ou *backdoors* de *software*/*hardware* como o *diceware* descrito especialmente para o Bitcoin [aqui](#toDo-link). No mínimo, recomendo que gere a chave privada pelo método *diceware* descrito no link anterior pelo menos uma vez na vida devido à experiência que te ajudará a entender ou fortalecer na prática algumas coisas a mais sobre entropia.
 
-<span style="color: #a94442;">**ATENÇÃO!**</span> Como programador(a) é a sua responsabilidade conhecer e entender a ferramenta que você estiver utilizando para a geração de números aleatórios criptograficamente seguros (*cryptographically secure pseudo-random number generator* - CSPRNG). Não use uma técnica própria desconhecida ao resto do mundo mesmo que você tenha a capacidade de cria uma técnica razoavelmente segura - parte fundamental na segurança de um algoritmo deste tipo é o fato de ele ter sido revisado por muitos especialistas e utilizado em "batalha" ao longo de muitos anos. Não confie nem mesmo nas ferramentas que eu apontar sem que você entenda porque elas são seguras e/ou que você possa verificar ampla confiança consolidada de outros especialistas nestas ferramentas. Dito isto, voltemos ao material...
+> **Danger** Como programador(a) é a sua responsabilidade conhecer e entender a ferramenta que você estiver utilizando para a geração de números aleatórios criptograficamente seguros (*cryptographically secure pseudo-random number generator* - CSPRNG). Não use uma técnica própria desconhecida ao resto do mundo mesmo que você tenha a capacidade de cria uma técnica razoavelmente segura - parte fundamental na segurança de um algoritmo deste tipo é o fato de ele ter sido revisado por muitos especialistas e utilizado em "batalha" ao longo de muitos anos. Não confie nem mesmo nas ferramentas que eu apontar sem que você entenda porque elas são seguras e/ou que você possa verificar ampla confiança consolidada de outros especialistas nestas ferramentas. Dito isto, voltemos ao material...
 
 Em Python, podemos utilizar o ```os.urandom``` que coleta *bytes* a partir do ```/dev/urandom``` em sistema UNIX e ```cryptGenRandom()``` no Windows para geração da chave privada em *bytes*:
 
@@ -35,9 +35,10 @@ privkey_int = int.from_bytes(privkey, byteorder='little')
 
 Agora temos 32 *bytes* (ou 256 *bits*) coletados. Certamente nenhum dos formatos mostrados parece com o que costumamos ler ao pedir que uma carteira exporte a chave privada para nós. Isto ocorre porque, diferente de quando estamos passando informação pelos cabos, costumamos utilizar um formato especial chamado WIF.
 
-**WIF**: este é o formato que costumamos ler e é abreviação para *Wallet Import Format* (Formato de Importação de Carteira). Este formato é usado para facilitar a leitura e cópia das chaves por humanos. O processo é simples: pegamos a chave privada, concatenamos o *byte* ```0x80``` para ```mainet``` ou ```0xef``` para a ```testnet``` como prefixo e o *byte* ```0x01``` como sufixo se a chave privada for corresponder a uma chave pública comprimida - uma forma de representar chaves públicas usando menos espaço -, realizamos uma função *hash* SHA-256 duas vezes seguidas - comumente referido como *shasha* -, pegamos os 4 primeiros *bytes* do resultado - este é o *checksum* -, adicionamos estes 4 *bytes* ao final do resultado da chave pública antes do *shasha* e, então, usamos a funcão *Base58Check* para codificar o resultado final.
+> **Info** **WIF**: este é o formato que costumamos ler e é abreviação para *Wallet Import Format* (Formato de Importação de Carteira). Este formato é usado para facilitar a leitura e cópia das chaves por humanos. O processo é simples: pegamos a chave privada, concatenamos o *byte* ```0x80``` para ```mainet``` ou ```0xef``` para a ```testnet``` como prefixo e o *byte* ```0x01``` como sufixo se a chave privada for corresponder a uma chave pública comprimida - uma forma de representar chaves públicas usando menos espaço -, realizamos uma função *hash* SHA-256 duas vezes seguidas - comumente referido como *shasha* -, pegamos os 4 primeiros *bytes* do resultado - este é o *checksum* -, adicionamos estes 4 *bytes* ao final do resultado da chave pública antes do *shasha*, e então, usamos a funcão *Base58Check* para codificar o resultado final.
 
-**Base58Check**: é uma versão modificada da função de Base58 utilizada no Bitcoin para codificar chaves e endereços na rede para produzir um formato que facilita a digitação por humanos, assim como diminui drasticamente a chance de erros na digitação limitando os endereços a caracteres específicos que não sejam visualmente idênticos em algumas fontes - como 1 e I ou 0 e O - e outros problemas parecidos no envio e recebimento de endereços por humanos.
+
+>**Base58Check**: é uma versão modificada da função de Base58 utilizada no Bitcoin para codificar chaves e endereços na rede para produzir um formato que facilita a digitação por humanos, assim como diminui drasticamente a chance de erros na digitação limitando os endereços a caracteres específicos que não sejam visualmente idênticos em algumas fontes - como 1 e I ou 0 e O - e outros problemas parecidos no envio e recebimento de endereços por humanos.
 
 Então, vamos pegar a chave privada que criamos e transformar ela para o formato WIF. Ao finalizarmos, como teste do resultado, pegue a chave no formato WIF e importe ela em algum *software* de carteira e verá que a sua carteira criará endereços a partir desta chave privada normalmente. Aqui está uma forma como podemos transformar a chave privada que obtivemos acima para o formato WIF:
 
@@ -86,7 +87,7 @@ KxBBVbkgku7f5XudmAizo51h8pfBTHDhL1u167EMgKS7PK3bnrwc
 
 Aqui é onde faremos a primeira operação exclusiva de Criptografia de Chave Pública ao usarmos o ECDSA (*Elliptic Curve Digital Signature Algorithm*) para gerarmos a nossa chave pública a partir da chave privada que criamos anteriormente. Para este tipo de operação, recomendo que utilize *libraries* como [python-ecsda](https://github.com/warner/python-ecdsa), [secp256k1-py](https://github.com/ludbb/secp256k1-py) (*binding* direto com a [secp256k1](https://github.com/bitcoin-core/secp256k1) escrita em C) ou alguma *lib* já bem utilizada em produção na sua linguagem de preferência - melhor ajudar a melhorar estas *libs* do que fazer uma nova implementação à toa e apresentar um novo risco sem benefício. Mas, para nosso fim didático deste material, vamos ver como calculamos a chave pública a partir da chave privada em Python para simplificar a visualização e entendimento.
 
-<span style="color: #a94442;">**ATENÇÃO!**</span> O código abaixo é uma versão útil apenas como referência didática. Não recomendo que use este código em produção de forma alguma! Este código não foi testado e revisado como necessário para os padrões de segurança compatíveis com criptografia, e, provavelmente, há mais razões para não fazer operações criptográficas em puro Python do que átomos no Universo observável. **VOCÊ FOI AVISADO(A)**.
+> **Danger** O código abaixo é uma versão útil apenas como referência didática. Não recomendo que use este código em produção de forma alguma! Este código não foi testado e revisado como necessário para os padrões de segurança compatíveis com criptografia, e provavelmente, há mais razões para não fazer operações criptográficas em puro Python do que átomos no Universo observável. **VOCÊ FOI AVISADO(A)**.
 
 Agora que você sabe que é uma péssima ideia usar o código abaixo em qualquer ambiente de produção com valores reais, podemos continuar com a geração da chave pública. Já tendo a chave privada que criamos acima na variável ```privkey``` que será utilizada ao longo deste exemplo:
 
@@ -251,7 +252,7 @@ Terceiro, adicionamos o byte ```0x00``` para identificar a chave para a *mainet*
 
 E este resultado é o endereço Bitcoin. Guarde-o, pois já usaremos ele novamente. Mais uma vez não se parece com os endereços que costumamos ver e escrever. Isto ocorre porque este é o endereço puro em hexadecimal sem Base58Check. Para termos um endereço com proteção contra erros de digitação como a maioria dos endereços que lidamos no dia-a-dia, seguimos os seguintes passos.
 
-Primeiro vamos pegar um 4 *bytes* para usar como *checksum* fazendo o *shasha* nos bytes do endereço. Como dito acima costumamos chamar de *shasha* quando tiramos um *hash* SHA-256 e passamos este resultado novamente na função *hash* SHA256. Para isso, fazemos:
+Primeiro vamos pegar 4 *bytes* para usar como *checksum* fazendo o *shasha* nos bytes do endereço. Como dito acima costumamos chamar de *shasha* quando tiramos um *hash* SHA-256 e passamos este resultado novamente na função *hash* SHA256. Para isso, fazemos:
 
 ```
 >>> raw_addr_bytes = codecs.decode(raw_address.encode('utf-8'), 'hex')
@@ -270,7 +271,7 @@ b'EZs5'
 '455a7335'
 ```
 
-Agora adicionamos o *checksum* ao final do endereço ```000fc8aa8b93103a388fd562514ec250be2d403a27``` que pegamos um pouco mais acima e, finalmente, passamos os *bytes* pela função para codificar em Base58:
+Agora adicionamos o *checksum* ao final do endereço ```000fc8aa8b93103a388fd562514ec250be2d403a27``` que pegamos um pouco mais acima, e finalmente, passamos os *bytes* pela função para codificar em Base58:
 
 ```
 >>> from base58 import b58encode
@@ -282,3 +283,15 @@ Agora adicionamos o *checksum* ao final do endereço ```000fc8aa8b93103a388fd562
 ```
 
 E este é o endereço que podemos usar para receber transações nos *softwares* de carteira controlado pela chave privada criada no início.
+
+> **Note** Repare que com o uso de 4 *bytes* como *checksum* junto om o Base58Check, nós temos um endereço com proteção contra erros de digitação contanto que o *software* de carteira o implemente corretamente. O Base58Check serve para que os endereços gerados sejam de mais facilidade visual e o *checksum* serve para garantir que o endereço realmente foi digitado corretamente antes de enviar uma transação. Sem esta proteção, a chance de erros com perdas financeiras seria muito maior para os usuários.
+
+## Carteiras
+
+Carteiras ou *wallets* são *softwares* ou arquivos - geralmente, refere-se a *softwares* - que contém chaves privadas e/ou disponibilizam funcionalidades para administração destas chaves, como: *backup*, envio de transações, monitoramento de recebimento de transações, *UTXOs*, geração de endereços, etc. As carteiras podem guardar outras informações sobre as transações para melhor usabilidade como anotações sobre as transações, e outras utilidades como assinatura de textos ou arquivos com suas chaves privadas.
+
+O *software* de carteira mais simples costuma fazer, pelo menos, as operações: gerar chaves privadas, derivar chaves públicas correspondentes, monitorar *UTXOs* para para estas chave, e criar e assinar transações. Existem outras carteiras com menos ou mais funcionalidades de acordo com o caso de uso (exemplo: uma empresa pode utilizar uma carteira com o código enxuto para ter uma menor superfície de contato em um computador desconectado da Internet com a única funcionalidade de proteger as chaves privadas e assinar transações para transmitir estas transações por outra máquina seguindo um protocolo de segurança mais rigoroso). No entanto, a diferença fundamental nas carteiras mais utilizadas está no esquema de geração de chaves que elas utilizam. Veremos os três métodos mais comuns de geração de chaves utilizados por carteiras e um pouco sobre o contexto técnico da utilidade das *hardware wallets*.
+
+### Tipos de Carteiras
+
+**
