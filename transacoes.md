@@ -107,16 +107,14 @@ E a execução desta expressão acontece como na imagem a seguir:
 
 Este *unlocking script* satisfaz o "desafio" proposto pelo *locking script* ao retornar TRUE que é representado pelo número 1 em hexadecimal ```0x01```. Caso a solução fosse inválida, ```OP_EQUAL``` retornaria FALSE ou ```0x00``` para a pilha.
 
-Agora, podemos verificar a expressão proposta inicialmente com uma situação comum em transações Bitcoin, notando, antes, o que cada um dos **opcodes** faz.
+Agora, entendendo a forma de execução podemos ver o que cada *opcode* na expressão inicial muito comum em transações Bitcoin faz com cada valor anterior.
 
 ```OP_DUP```: Duplica o valor no topo da pilha, ou seja, se ```x``` estiver no topo ```xx``` será retornado.
 ```OP_HASH160```: Aplica duas funções *hash* no *input*. Primeiro um SHA-256 e depois um RIPEMD-160, o que a partir de uma chave pública formará o endereço Bitcoin correspondente como visto em [Endereços e Carteiras](enderecos-e-carteiras.md).
 ```OP_EQUALVERIFY```: Aplica ```OP_EQUAL``` e ```OP_VERIFY``` logo em seguida, o que significa que checa se os *inputs* são iguais (e retorna TRUE se forem) e, então, marca o *script* como inválido se o valor no topo da pilha for FALSE e nada se for TRUE.
 ```OP_CHECKSIG```: Aplica uma função *hash* sobre os *outputs*, *inputs* e *script* da transação e verifica se a assinatura realmente pertence à chave esperada.
 
-E a execução deste *P2PKH* fica assim:
-
-[SCRIPT EXECUTION IMAGE PLACEHOLDER - 3]
+A execução do *script* inicialmente proposto retornará TRUE se a assinatura corresponder com a esperada e fará com que a transação seja considerada válida se todo o resto estiver certo - como possíveis tentativas de *double spend* ou valores errados.
 
 #### Outros Scripts Comuns
 
