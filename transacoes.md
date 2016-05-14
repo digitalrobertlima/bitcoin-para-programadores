@@ -169,4 +169,4 @@ Isso resolve alguns problemas, mas a capacidade mais interessante vem com a *fea
 Finalmente, a partir de agora, qualquer transação enviada para este endereço com prefixo 3 respeitará as regras de destrancamento ditadas pelo *script* utilizado para formar este endereço. Resolvendo, entre outros problemas descritos acima, a questão de facilidade de pagamento já que ningueḿ que envia a transação para este endereço precisa conhecer o *script* que o formou.
 
 
-**Próximo capítulo:** [Mineração](mineracao.md)
+**Próximo capítulo:** [Rede P2P](rede-p2p.md)
