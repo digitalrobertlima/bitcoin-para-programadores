@@ -178,4 +178,31 @@ $ bitcoin-cli getpeerinfo
 ]
 ```
 
-**Troca de Inventário:** 
+**Troca de Inventário:** Agora, para que o nó que acabou de entrar na rede possa ter uma cópia atualizada da blockchain, uma das primeiras coisas que ele faz ao se conectar com outros nós é a troca de inventários. A primeira mensagem enviada ao se conectar ao outro nó inclui o *bestHeight* que informa até que bloco ele tem conhecimento. Assim que ele receber a mensagem de versão de seu *peer* contendo o *bestHeight* dele, ele saberá se está precisando sincronizar a sua cópia local da blockchain com o resto do consenso da rede ou se é seu *peer* que está mais atrás. O *peer* que tiver a blockchain com mais longa (normalmente, a com mais trabalho), já sabendo quantos blocos o *peer* com a blockchain mais curta precisa, identificará os 500 primeiros blocos que o *peer* está precisando para alcançar o resto da rede e enviará uma mensagem *inv* com os *hashes* dos blocos para que, então, o *peer* que precisa se atualizar envie uma mensagem *getdata* pedingo a informação completa de cada bloco para que ele possa baixar os blocos e verificar um por um de forma independente.
+
+Este nó, agora, faz parte da rede P2P Bitcoin e contribui recebendo, verificando e transmitindo transações, blocos e outras informações ao resto da rede.
+
+> **Info** Uma dica para caso ainda esteja muitos blocos atrás na rede e queira acelerar a atualização é buscar por nós bem conectados e que estejam contribuindo bastante para a rede em locais como [esta lista](https://bitnodes.21.co/nodes/leaderboard/) e iniciar o seu client com a *flag* ```-addnode``` com o IP de alguns destes nós.
+
+## Transmitindo e Propagando Transações
+
+Toda vez que um nó conectado à rede cria uma transação, ele envia uma mensagem *inv* informando a nova transação para todos os seus *peers*. A mensagem *inv* é uma mensagem de inventório que apenas notifica outros nós sobre um novo objeto descoberto ou envia dados sobre algo que está sendo requisitado. O nó que recebe uma mensagem *inv* sabe se tem ou não um objeto porque esta mensagem inclui o *hash* do objeto. Este é o formato de uma mensagem *inv*:
+
+| Campo | Tamanho    | Descrição                                      |
+|-------|------------|------------------------------------------------|
+| type  | 4 *bytes*  | tipo do objeto identificado neste inventório   |
+| hash  | 32 *bytes* | *hash* do objeto                               |
+
+Os outros nós que receberem a mensagem *inv* e não conhecerem este novo objeto - neste caso, uma nova transação - enviarão uma mensagem *getdata* incluindo o *hash* do objeto pedindo a informação completa. Ao receberem a transação, poderão verificar a validade dela por si próprios e, em caso da transação ser válida, repetirão o mesmo processo com os outros *peers* propagando a transação sucessivamente pela rede.
+
+### Pools de Transação
+
+Enquanto estas transações recebidas e validadas pelos nós não são incluidas por algum minerador à blockchain, elas, geralmente, permanecem em um espaço de memória volátil de cada *full-node* da rede. A maioria dos nós conectados à rede implementam a *pool* chamada *mempool* e, alguns outros, implementam *pools* separadas da *mempool* como as *orphan pools* para as chamadas transações orfãs e as *UTXO pools* que pode ser implementada em uma memória local persistente dependendo do tipo do *software* utilizado pelo nó.
+
+**mempool:** guarda todas as transações recebidas e validadas pelo nó que não tenham sido escritas na blockchain por algum minerador. Quanto mais transações sendo propagadas pela rede, maior a *mempool* ficará até que ela vá sendo gradualmente esvaziada com as transações sendo aceitas pelos mineradores. Muitas implementações de carteiras usam a *mempool* para calcular as taxas de transação ideais para que a transação seja aceita o mais rápido quanto possível, criando uma sugestão de *fee* flutuante.
+
+**orphan pool:** é uma *pool* separada da *mempool* existente em algumas versões de *full-node* na rede que guardam as transações que referenciem e dependam de uma transação anterior a elas, chamadas de *parent transactions* - transações pai/mãe - que ainda não tenham sido vistas por este nó.
+
+**UTXO pool:** diferente da *mempool*, é uma *pool* de transações presente em algumas implementações que guarda em memória volátil ou persistente local milhões de entradas de *outputs* de transação criados e nunca gastos com *UTXOs* que podem datar, em alguns casos, de transações criadas em 2009. E, enquanto a *mempool* e a *orphan pool* apenas contém transações não confirmadas, esta *pool* apenas contém transações confirmadas na rede.
+
+**Próximo capítulo:** [Blockchain](blockchain.md)
