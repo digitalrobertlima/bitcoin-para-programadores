@@ -18,6 +18,6 @@ Tudo o que você precisa para tirar máximo proveito do material apresentado é 
 * [Bitcoin Core](bitcoin-core.md)
 * [Endereços e Carteiras](enderecos-e-carteiras.md)
 * [Transações](transacoes.md)
-* [Rede P2P](rede-p2p.md) (toDo)
+* [Rede P2P](rede-p2p.md)
 * [Blockchain](blockchain.md) (toDo)
 * [Mineração](mineracao.md) (toDo)
