@@ -1,1 +1,4 @@
 # Blockchain
+
+A blockchain é uma estrutura de dados ordenada composta por blocos de transações criptograficamente ligados por uma referência direta ao bloco anterior. A propriedade mais interessante da blockchain para o consenso de um sistema descentralizado é este elo criptográfico que liga os seus blocos entre si, que é criado pelo esforço computacional do algoritmo de [*proof-of-work*](mineracao.md#proofofwork). Sendo apenas mais uma estrutura de dados sem propriedades excepcionalmente úteis por si só fora do contexto apropriado; em um sistema descentralizado é onde esta estrutura de dados engenhosa se torna uma peça-chave na manutenção de consenso e segurança. A blockchain foi dada à luz por Satoshi Nakamoto como uma abordagem inteligente a um problema inerente a sistemas descentralizados: confiança.
+
