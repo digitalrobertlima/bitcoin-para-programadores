@@ -60,7 +60,7 @@ Exemplo de ambas funções sendo usadas em Python com a *string* "bitcoin" como 
 
 Com estas funções em mão conseguimos verificar integridade de informações enviadas à rede, gerar e verificar prova de trabalho computacional ou *proof-of-work* e, com isso, criar a "cola" criptográfica fundamental para a segurança da blockchain (mais detalhes em [Mineração](mineracao.md)).
 
-A compreensão sobre *hashes* neste nível de abstração já é suficiente para o entendimento do valor de suas propriedades no Bitcoin e o uso consciente destas propriedades que você verá adiante em mais exemplos. Caso você queira aprofundar o seu entendimento das abstrações matemáticas que possibilitam estas funções, recomendo: [ links list placeholder ]
+A compreensão sobre *hashes* neste nível de abstração já é suficiente para o entendimento do valor de suas propriedades no Bitcoin e o uso consciente destas propriedades que você verá adiante em mais exemplos. <!-- Caso você queira aprofundar o seu entendimento das abstrações matemáticas que possibilitam estas funções, recomendo: [ links list placeholder ] -->
 
  ### Criptografia de Chave Pública
 
@@ -80,6 +80,6 @@ Este tipo de assinatura é o que permite que todos na rede possam comprovar que 
 
 Por exemplo, digamos que Maria envia 1 bitcoin para o endereço bitcoin de João e João, por sua vez, envia 1 bitcoin para o endereço de Raphael. Todas estas transações são apenas mensagens que dizem "passar *n* bitcoins de *x* para *y*" e todas estas mensagens precisam ser assinadas por quem a rede considera o atual detentor dos bitcoins para que sejam consideradas válidas e incluidas na blockchain por algum minerador.
 
-Em [Endereços e Carteiras](enderecos-e-carteiras.md), veremos como a chave privada pode ser gerada e como fazemos para derivar a chave pública a partir da chave privada para, finalmente, gerar um endereço Bitcoin. Em [Transações](transacoes.md) veremos como as assinaturas são realmente enxergadas na rede e como assinar transações utilizando os comandos RPC do Bitcoin Core. E, para caso você queira se aprofundar mais nas abstrações matemáticas que dão à luz esta tecnologia amplamente utilizada atualmente, recomendo: [links list placeholder]
+Em [Endereços e Carteiras](enderecos-e-carteiras.md), veremos como a chave privada pode ser gerada e como fazemos para derivar a chave pública a partir da chave privada para, finalmente, gerar um endereço Bitcoin. Em [Transações](transacoes.md) veremos como as assinaturas são realmente enxergadas na rede e como assinar transações utilizando os comandos RPC do Bitcoin Core. <!-- E, para caso você queira se aprofundar mais nas abstrações matemáticas que dão à luz esta tecnologia amplamente utilizada atualmente, recomendo: [links list placeholder] -->
 
 **Próximo capítulo:** [Bitcoin Core](bitcoin-core.md)
