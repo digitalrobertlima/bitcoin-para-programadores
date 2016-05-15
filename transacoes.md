@@ -35,7 +35,7 @@ A quantia de bitcoins que você tem são apenas uma abstração dos *UTXO* que v
 
 O modo como as transações funcionam, faz com que elas formem uma sucessiva corrente de *inputs* e *outputs* trancando e destrancando valores na rede.
 
-[INPUT/OUTPUT chain image PLACEHOLDER - 0]
+![Corrente de Transações](/images/transacoes/tx-chain.png)
 
 Tendo como única exceção as chamadas transações *coinbase* que são as transações criadas pelos mineradores ao incluirem um novo bloco na blockchain (mais detalhes em [Mineração](mineracao.md)) e recolherem o prêmio pelo trabalho.
 
@@ -79,7 +79,7 @@ A resposta está na linguagem *Script* do Bitcoin. Chamada apenas de *Script* é
 
 Primeiro, vejamos como ambos *scripts* ficam organizados para serem interpretados na validação de uma transação. Cada nó responsável por validar uma transação utiliza o ```scriptPubKey``` do *UTXO* referenciado no *input* atual e utiliza o ```scriptSig``` deste *input* para formar a expressão a ser verificada. Aqui está um exemplo do tipo mais comum de transacão - a *Pay to Pubkey Hash* (*P2PKH*) - em que "enviamos" um certo número de bitcoins para ser gasto pelo detentor da chave privada de outro endereço:
 
-[<sig> <PubK> OP_DUP OP_HASH160 <PubKHash> OP_EQUALVERIFY OP_CHECKSIG - IMAGE PLACEHOLDER - 1]
+![Script de Transação](/images/transacoes/tx-script.png)
 
 Mas antes de resolvermos esta expressão, vamos visualizar a resolução de uma expressão com operações matemáticas básicas para que entendamos como os *scripts* são interpretados e validados na rede Bitcoin. Tomemos como exemplo este *locking script* contendo apenas operações aritméticas:
 
@@ -103,7 +103,7 @@ A explicação para isso é que o programa de validação pega o *locking script
 
 E a execução desta expressão acontece como na imagem a seguir:
 
-[SCRIPT EXECUTION IMAGE PLACEHOLDER - 2]
+![Execução de Script de Transação](/images/transacoes/tx-script-exec.png)
 
 Este *unlocking script* satisfaz o "desafio" proposto pelo *locking script* ao retornar TRUE que é representado pelo número 1 em hexadecimal ```0x01```. Caso a solução fosse inválida, ```OP_EQUAL``` retornaria FALSE ou ```0x00``` para a pilha.
 

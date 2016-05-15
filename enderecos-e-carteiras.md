@@ -96,19 +96,19 @@ Agora que você sabe que é uma péssima ideia usar o código abaixo em qualquer
 b'\x9a\xfbch\x05\xc3|\xdf\xfc\xebJ\x89g\xdf\xfcn\xbe\x80%m\x91\x80DI\xd0hs6\x04\x84~\xe8'
 ```
 
-Como comentado anteriormente, o Bitcoin utiliza a implementação de Curva Elíptica secp256k1 definida pela equação ```y^2 == x^3 + 7 (mod p)``` sendo ```p = 2^256 - 2^32 - 977```. A curva elíptica que estamos trabalhando pode ser representada por:
+Como comentado anteriormente, o Bitcoin utiliza a implementação de Curva Elíptica secp256k1 definida pela equação ```y^2 == x^3 + 7 (mod p)``` sendo ```p = 2^256 - 2^32 - 977```. A curva elíptica que estamos trabalhando pode ser graficamente representada por:
 
-[EC IMG PLACEHOLDER - 4]
+![Curva Elíptica](/images/enderecos-e-carteiras/ecc.png)
 
 Para que calculemos a curva usada em nosso esquema de criptografia de chave pública, temos que ter o poder de duas operações: Adição e multiplicação de pontos. A utilidade deste método para o fim que pretendemos começa a ser visualizada aqui ao perceber que as únicas operações que podemos fazer com pontos são adição e multiplicação.
 
-Para adicionarmos o Ponto A ao Ponto B de uma curva como esta, primeiro desenhamos uma linha entre os dois pontos A e B, esta linha fará uma interseção com um terceiro ponto * na curva, então só precisamos refletir esta interseção passando pelo eixo x para que tenhamos o resultado da soma dos pontos A e B:
+Para adicionarmos o Ponto A ao Ponto B de uma curva como esta, primeiro desenhamos uma linha entre os dois pontos A e B, esta linha fará uma interseção com um terceiro ponto na curva, então só precisamos refletir esta interseção passando pelo eixo x para que tenhamos o resultado da soma dos pontos A e B:
 
-[EC ADD OPERATION IMG PLACEHOLDER with EVIDENT POINTS - 5]
+![Adição de Pontos](/images/enderecos-e-carteiras/ecc-add.png)
 
 E para adicionarmos um mesmo ponto A a ele mesmo, nós desenhamos uma linha tangencial à curva tocando no Ponto A, esta linha terá uma interseção com a curva formando um segundo ponto, daí basta que façamos a reflexão como no primeiro caso e achamos o resultado de ```2 * Ponto A```:
 
-[EC ADD OPERATION IMG PLACEHOldER with EVIDENT POINTS - 6]
+![Dobro de um Ponto](/images/enderecos-e-carteiras/ecc-double.png)
 
 Como multiplicação nada mais é do que adicionar um mesmo valor por ele *n* vezes, nós já temos o que precisamos para realizar as operações necessárias.
 
@@ -312,6 +312,6 @@ O *software* de carteira mais simples costuma fazer, pelo menos, as operações:
 
 **Hierachical Deterministic (HD) Wallets**: carteiras hierárquicas determinísticas como definidas pelas [BIP0032](https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki) e [BIP0044](https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki) são um tipo avançado de carteira determinística em que as chaves também são geradas a partir de uma *seed* e todas são geradas em uma ordem não aleatória. A diferença aparece na *feature* que este tipo de carteira apresenta ao gerar suas chaves formando uma estrutura de árvore com cada folha na árvore tendo a possibilidade de gerar as chaves filhas e não as acima delas. Isto possibilita uma organização estrutural superior da carteira com facilidades de organização, divisão de carteiras e, inclusive, a possibilidade de ter uma carteira dividida por suas folhas por pessoas de uma empresa de acordo com a estrutura organizacional sem comprometer as chaves privadas mestras. Para um melhor entendimento, veja esta imagem mostrando da *seed* até as folhas filhas:
 
-[HD WALLET IMG PLACEHOLDER]
+![Chaves Hierárquica Determinísticas](/images/enderecos-e-carteiras/hd-wallet.png)
 
 **Próximo capítulo:** [Transações](transacoes.md)
