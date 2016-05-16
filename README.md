@@ -22,4 +22,4 @@ Que este possa ser apenas o início de sua jornada numa tecnologia que importa.
 * [Transações](transacoes.md)
 * [Rede P2P](rede-p2p.md)
 * [Blockchain](blockchain.md)
-* [Mineração](mineracao.md) (toDo)
+* [Mineração](mineracao.md)
