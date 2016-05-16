@@ -42,7 +42,7 @@ Como dito, no cabeçalho dos blocos está a chave para a segurança da blockchai
 
 O que ocorre é que cada bloco tem um identificador único que é criado a partir do *hash* de seu cabeçalho que serve tanto como identificador único deste objeto na rede quanto como prova de toda informação - incluindo as transações - contida nele. Para esta identificacão, apenas precisamos do cabeçalho de cada bloco já que a Raiz de Merkle (explicada um pouco adiante) serve como prova de todas as transações incluidas no bloco da qual ela faz parte. Esta característica faz com que a blockchain possa ser visualizada como uma corrente de blocos com os *hashes* do bloco anterior como elo criptográfico entre cada bloco:
 
-[ BLOCKCHAIN IMAGE PLACEHOLDER ]
+![blockchain](/images/blockchain/blockchain.png)
 
 Na prática, cada novo bloco tem ligação matematicamente comprovada com todos os blocos anteriores a ele, pois cada bloco tem um *hash* como identificador **único** que inclui, em seu resultado, o *hash* do bloco anterior a ele na blockchain. E, junto com o esforço computacional comprovado pelo *proof-of-work* responsável por gerar cada bloco, esta propriedade cria um elo que torna a forjabilidade da blockchain exponencialmente mais difícil a cada novo bloco.
 
@@ -79,9 +79,9 @@ E este é o *hash* do bloco 125552. Note a passagem da ordem dos *bytes* de *lit
 
 Para formar a raiz desta árvore binária com as transações, cada transação tem o seu *id* (o *hash* da transação) concatenado ao *id* da transação vizinha na árvore é submetida a uma dupla rodada da função *hash* SHA-256 sucessivamente até chegar à raiz. A visualização torna simples:
 
-[ SIMPLE MERKLE TREE IMAGE PLACEHOLDER ]
+![Árvore de Merkle](/images/blockchain/simple-merkle-tree.png)
 
-Cada um dos *hashes* passados é a mesma dupla rodada de SHA-256 já conhecida por nós. Logo, para formar a folha ```H AB``` e supondo que já temos o *id* das transações atribuídos às variáveis ```tx_a``` e ```tx_b``` basta que façamos isso:
+Cada um dos *hashes* passados é a mesma dupla rodada de SHA-256 já conhecida por nós. Logo, para formar o nó ```H AB``` e supondo que já temos o *id* das transações atribuídos às variáveis ```tx_a``` e ```tx_b``` basta que façamos isso:
 
 ```
 >>> import hashlib
@@ -90,13 +90,13 @@ Cada um dos *hashes* passados é a mesma dupla rodada de SHA-256 já conhecida p
 
 Para isso, todas as transações devem ser colocadas no mesmo nível como na imagem e formarem duplas para criarem os níveis acima sucessivamente. Em caso do bloco não ter um número par de transações, tudo que se faz é repetir a última transação:
 
-[ SIMPLE MERKLE TREE WITH REPEATED TX IMAGE PLACEHOLDER ]
+![Árvore de Merkle com Transação Repetida](/images/blockchain/merkle-tree-repeated-tx.png)
 
 Óbviamente, no Bitcoin, estas árvores são muito maiores e proporcionais ao número de transações de cada bloco e em cenários desta magnitude que esta estrutura se torna uma solução para comprovação eficiente da existência e integridade de uma transação num dado bloco. Cada *hash* deste tem o tamanho de 32 *bytes* e a complexidade de busca na árvore de Merkle cresce ```O(log2(N))``` na notação "Big-O" com N sendo o número de transações.
 
 Vejamos um exemplo um pouco maior de uma árvore de Merkle criada a partir de 16 transações:
 
-[ BIGGER MERKLE TREE IMAGE PLACEHOLDER ]
+![Árvore de Merkle com 16 folhas](/images/blockchain/bigger-merkle-tree.png)
 
 Caso precisemos comprovarmos que a transação M está incluida no bloco, precisamos de apenas 4 *hashes* de 32 *bytes* num total de 128 *bytes* para formar o noso caminho de Merkle. Veja como o caminho de Merkle junto com a raiz de Merkle é tudo que precisamos para comprovarmos que um bloco inclui a transação M:
 
