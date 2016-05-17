@@ -14,7 +14,7 @@ Outro propósito da mineração está em um dos incentivos oferecido aos minerad
 
 Todo minerador que escreve um novo bloco na blockchain ganha o direito de criar uma transação chamada *coinbase* que é uma exceção por não ter *inputs* e ter apenas o *output* com a recompensa atual da rede para o endereço escolhido pelo minerador. Esta geração de moedas a partir das transações *coinbase* apresenta um crescimento logarítimico no número total de moedas circulando na rede:
 
-[ COINS AMMOUNT INCREASE IMAGE PLACEHOLDER ] 
+![oferta de bitcoins](/images/mineracao/bitcoin-supply.png)
 
 O número total de bitcoins que serão criados na rede é aproximadamente 21 milhões de bitcoins; precisamente 2099999997690000 *satoshis*. Podemos visualizarmos este crescimento com um pequeno *script* em Python3:
 
@@ -116,16 +116,93 @@ Agora, para facilitar a nossa visualização do trabalho computacional despendid
 [ placeholder ]
 ```
 
-E, para finalizar, podemos ver uma implementação simplificada do algoritmo de *proof-of-work* para visualizarmos a progressão dos números:
+E, para finalizar, podemos ver uma implementação simplificada do algoritmo de *proof-of-work* para visualizarmos a progressão dos números com a dificuldade em *bits* aumentando progressivamente:
 
 ```
-[ placeholder ]
+import hashlib
+import time
+
+max_nonce = 2**32
+
+
+def proof_of_work(header, difficulty_bits):
+    # calcula o alvo da dificuldade
+    target = 2**(256-difficulty_bits)
+
+    for nonce in range(max_nonce):
+        utf8_header = header.encode('utf-8')
+        utf8_nonce = str(nonce).encode('utf-8')
+        hash_result = hashlib.sha256(utf8_header + utf8_nonce).hexdigest()
+
+        # checa se e um resultado valido
+        if int(hash_result, 16) < target:
+            print("Sucesso com o nonce %d" % nonce)
+            print("Hash é %s" % hash_result)
+            return(hash_result, nonce)
+    print("Falhou após %d (max_nonce) tentativas" % nonce)
+    return nonce
+
+if __name__ == '__main__':
+    nonce = 0
+    hash_result = ''
+
+    # dificuldade de 0 a 31 bits
+    for difficulty_bits in range(32):
+        difficulty = 2**difficulty_bits
+        print("Dificuldade: %d (%d bits)" % (difficulty, difficulty_bits))
+
+        print("Começando busca...")
+
+        # marca a hora inicial
+        start_time = time.time()
+
+        # cria um novo bloco que inclui o hash do anterior
+        # usamos apenas uma string vazia como um mock das transacoes
+        new_block = 'bloco teste com transações' + hash_result
+
+        hash_result, nonce = proof_of_work(new_block, difficulty_bits)
+
+        # marca a hora final
+        end_time = time.time()
+
+        elapsed_time = end_time - start_time
+        print("Tempo Corrido: %.4f segundos" % elapsed_time)
+
+        if elapsed_time > 0:
+            # uma estimativa de hashes por segundo
+            hash_power = float(nonce/elapsed_time)
+            print("Poder de Hashing: %d hashes por segundo" % hash_power)
+        print("\n")
 ```
 
-Rodando este código, podemos observar o aumento da dificuldade em *bits* que representa o número de 0's ao início do valor alvo e observar quanto tempo nosso computador demora para achar uma solução em cada dificultade. Logo vemos que o tempo cresce de forma exponencial como no exemplo com o meu computador:
+Rodando este código, podemos observar o aumento da dificuldade em *bits* que representa o número de 0's ao início do valor alvo e observar quanto tempo nosso computador demora para achar uma solução em cada dificultade. Logo vemos que o tempo cresce de forma exponencial - com espaço para alguma sorte - como neste output em meu computador:
 
 ```
-[ placeholder ]
+Dificuldade: 2 (1 bits)
+Começando busca...
+Sucesso com o nonce 0
+Hash é 065243447c61432cce2e6a047e9ee07d104a1ce9a28f9f7a70a12cf84de09b02
+Tempo Corrido: 0.0001 segundos
+Poder de Hashing: 0 hashes por segundo
+
+# [... outras dificuldades... ]
+Dificuldade: 4194304 (22 bits)
+Começando busca...
+Sucesso com o nonce 7782755
+Hash é 00000318dddbe8ba0b1272f58c3d4273640fd26413a41766de3a15f416cd5ddd
+Tempo Corrido: 28.6132 segundos
+Poder de Hashing: 271998 hashes por segundo
+
+# [...]
+Dificuldade: 67108864 (26 bits)
+Começando busca...
+Sucesso com o nonce 63590018
+Hash é 00000018645fee7587700bff0af594aeeb2f0973831df1b8c26ea5a589fcd0a2
+Tempo Corrido: 244.7094 segundos
+Poder de Hashing: 259859 hashes por segundo
+
+# [...]
+
 ```
 
 Com números de uma magnitude muito maior do que a que estamos fazendo em nossos processadores para entendermos o processo, os mineradores estão, neste exato momento, competindo restringidos pelas leis da física para alcançar estes mesmos tipos de resultados. Entendendo isto, observe os *hashes* dos [últimos blocos](https://blockr.io) e contemple o processamento colossal necessário para calcular cada um deles para atualizar a blockchain de forma a aumentar exponencialmente a segurança da blockchain contra alterações forjadas, ocupando um papel essencial no estabelecimento de consenso numa rede descentralizada de transferência de valores como o Bitcoin.

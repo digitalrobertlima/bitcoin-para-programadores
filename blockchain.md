@@ -100,7 +100,7 @@ Vejamos um exemplo um pouco maior de uma árvore de Merkle criada a partir de 16
 
 Caso precisemos comprovarmos que a transação M está incluida no bloco, precisamos de apenas 4 *hashes* de 32 *bytes* num total de 128 *bytes* para formar o noso caminho de Merkle. Veja como o caminho de Merkle junto com a raiz de Merkle é tudo que precisamos para comprovarmos que um bloco inclui a transação M:
 
-[ BIGGER MERKLE TREE WITH MERKLE PATH HIGHLIGHTED IMAGE PLACEHOLDER ]
+![caminho de merkle](/images/blockchain/merkle-path.png)
 
 A eficiência da árvore de Merkle para este objetivo vai se tornando mais óbvia de acordo com que aumentamos o número de transações e comparamos com o número de *bytes* necessários para comprovar a existência de uma transação nestes números maiores:
 
