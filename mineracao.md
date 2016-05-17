@@ -176,7 +176,53 @@ while True:
 No *output* deste último programa, podemos ver a progressão do esforço computacional até conseguirmos minerar o bloco... o que levou algum tempo:
 
 ```
+Hash do bloco anterior: 000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f
+Raiz de Merkle: 0e3e2357e806b6cdb1f70b54c3a3a17b6714ee1f0e68bebb44a74b1efd512098
+Alvo atual (hex): 00000000ffff0000000000000000000000000000000000000000000000000000
 
+Iniciando mineração...
+
+nonce: 100000001 
+blockhash (hex): 771be0368aaaa3fc1521f4d6db2fd1dfc6e9ef0952fd4bd822ad3b4610f7aebe 
+tempo corrido: 0.34 segundos 
+numero de zeros no inicio do hash: 0
+
+nonce: 100000003 
+blockhash (hex): 0fa9339e51cefb79cc6c61d602cbf549fbe29e8bf17427d840277f2b5037769a 
+tempo corrido: 0.34 segundos 
+numero de zeros no inicio do hash: 1
+
+nonce: 100000230 
+blockhash (hex): 00b911eccc58ef739f7e87cc45fcd445b746ca95f4eec0f3b4ea7854bcdd850e 
+tempo corrido: 0.34 segundos 
+numero de zeros no inicio do hash: 2
+
+nonce: 100001054 
+blockhash (hex): 000046253349900d528f82b17365378925e80e08e4404ce86d0a81be592332ba 
+tempo corrido: 0.36 segundos 
+numero de zeros no inicio do hash: 3
+
+nonce: 100075230 
+blockhash (hex): 0000e9a6a93a2d8c19bc35a797bc558afecb0a4d53247946fc2460dd749a7948 
+tempo corrido: 1.80 segundos 
+numero de zeros no inicio do hash: 4
+
+nonce: 100236426 
+blockhash (hex): 00000a8d845ea7b92ea3f589b0c8e3210e4351aa988daac57bc9b5b46cab26fc 
+tempo corrido: 4.82 segundos 
+numero de zeros no inicio do hash: 5
+
+nonce: 121523146 
+blockhash (hex): 00000048b1a635b6b7fd726bbf7be991dbe2ced3e894df08619e1c081e93ded8 
+tempo corrido: 425.43 segundos 
+numero de zeros no inicio do hash: 6
+
+nonce: 148058503 
+blockhash (hex): 0000000a8256eb559ad433b492a5fbee291a457d4f522631afd5a086a18cbcbd 
+tempo corrido: 959.89 segundos 
+numero de zeros no inicio do hash: 7
+
+# [... um tempo de espera até conseguir o alvo... ]
 ```
 
 Como pode ver pelo *output* com um computador pessoal, levamos um tempo considerável para minerar este bloco; no total * segundos.
