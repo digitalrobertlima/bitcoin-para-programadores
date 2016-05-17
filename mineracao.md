@@ -1,6 +1,6 @@
 # Mineração
 
-A mineração é o processo responsável por atualizar a blockchain e, até atingir o limite de cerca de 21 milhões *satoshis*, trazer novas moedas à rede por meio de uma competição de processamento intenso para alcançar um resultado *hash* menor ou igual ao resultado esperado pelo resto da rede. Esta competição propositalmente pesada para os recursos computacionais produz o *proof-of-work* - ou prova de trabalho - essencial para a segurança do consenso na rede, e o algoritmo usado no Bitcoin é o *hashcash* criado em 1997 por Adam Back.
+A mineração é o processo responsável por atualizar a blockchain e, até atingir o limite de cerca de 21 milhões *satoshis*, trazer novas moedas à rede por meio de uma competição de processamento intenso com o intuito de alcançar um *hash* de um bloco com transações válidas menor ou igual ao resultado esperado pelo resto da rede. Esta competição propositalmente pesada para os recursos computacionais produz o *proof-of-work* - ou prova de trabalho - essencial para a segurança do consenso na rede. O algoritmo usado no Bitcoin é o *hashcash* criado em 1997 por Adam Back.
 
 ## O Propósito da Mineração
 
@@ -12,13 +12,14 @@ Em [Blockchain](blockchain.md) podemos ver que cada bloco é diretamente ligado 
 
 Outro propósito da mineração está em um dos incentivos oferecido aos mineradores como recompensa pelo esforço computacional gasto na segurança da blockchain contra alterações maliciosas. Junto com as taxas de mineração recebidas de todas as transações incluidas no bloco, o minerador também recebe uma recompensa que tem a dupla função de servir de subsídio ao trabalho despendido e de trazer novas moedas à existência na rede. Este subsídio, atualmente, é de 25 bitcoins e, em breve diminuirá para 12.5 bitcoins; Esta diminuição no subsídio da rede é conhecida como *halving* e acontece a cada 210.000 blocos - aproximadamente 4 anos -, quando esta recompensa é cortada pela metade.
 
-Todo minerador que escreve um novo bloco na blockchain ganha o direito de criar uma transação chamada *coinbase* que é uma exceção por não ter *inputs* e ter apenas o *output* com a recompensa atual da rede para o endereço escolhido pelo minerador. Esta geração de moedas a partir das transações *coinbase* apresenta um crescimento logarítimico no número total de moedas circulando na rede:
+Todo minerador que escreve um novo bloco na blockchain ganha o direito de criar uma transação chamada *coinbase* que é uma exceção por não ter *inputs* e ter apenas o *output* com a recompensa atual da rede para o endereço escolhido pelo minerador. Esta geração de moedas a partir das transações *coinbase* apresenta um crescimento logarítimico no número total de moedas circulando na rede ao longo do tempo:
 
 ![oferta de bitcoins](/images/mineracao/bitcoin-supply.png)
 
-O número total de bitcoins que serão criados na rede é aproximadamente 21 milhões de bitcoins; precisamente 2099999997690000 *satoshis*. Podemos visualizarmos este crescimento com um pequeno *script* em Python3:
+O número total de bitcoins que serão criados na rede é aproximadamente 21 milhões de bitcoins; precisamente 2099999997690000 *satoshis*. Podemos visualizar este crescimento com um pequeno *script* em Python3:
 
 ```
+#!/usr/bin/env python3
 # Ano em que a rede foi iniciada por Satoshi Nakamoto
 START_YEAR = 2009
 # Intervalo de anos com blocos de 10 minutos
@@ -100,7 +101,7 @@ $ bitcoin-cli getdifficulty
 194254820283.444
 ```
 
-A dificuldade é uma medida do quão difícil é para achar um *hash* abaixo de um certo alvo. O alvo inicial da rede é ```0x00000000FFFF0000000000000000000000000000000000000000000000000000``` (em *float*, truncado) e é o máximo alvo possível no Bitcoin que representa a mínima dificuldade possível ```1``` ajustada, desde então, a cada 2016 blocos. O alvo esperado pela rede representa o número mínimo de 0's que o *hash* do próximo bloco deve ter para que seja aceito na atualização da blockchain, ou seja, o minerador deve conseguir criar um *hash* que represente um número menor ou igual ao alvo atual. Este mecanismo no *hashcash* serve como prova de computação devido ao fato de uqe quantos mais 0's um *hash* tem em seu início, mais trabalho computacional deve ser despendido para que se consiga achar este *hash*. Para calcular a notação do número retornado pelo comando ```getdifficulty```, basta usarmos esta fórmula:
+A dificuldade é uma medida do quão difícil é para achar um *hash* abaixo de um certo alvo. O alvo inicial da rede é ```0x00000000FFFF0000000000000000000000000000000000000000000000000000``` (em *float*, truncado) e é o máximo alvo possível no Bitcoin que representa a mínima dificuldade possível ```1``` ajustada, desde então, a cada 2016 blocos. O alvo esperado pela rede representa o número mínimo de 0's que o *hash* do próximo bloco deve ter para que seja aceito na atualização da blockchain, ou seja, o minerador deve conseguir criar um *hash* que represente um número menor ou igual ao alvo atual. Este mecanismo no *hashcash* serve como prova de computação devido ao fato de que quantos mais 0's um *hash* tem em seu início, mais trabalho computacional deve ser despendido para que se consiga achar este *hash* e este trabalho computacional é previsível. Para calcular a notação do número retornado pelo comando ```getdifficulty```, usamos esta fórmula como base:
 
 ```
 dificuldade_atual = dificuldade_inicial / alvo_atual
@@ -110,15 +111,80 @@ No Bitcoin Core, a você pode ver o cálculo da dificuldade no [arquivo main.cpp
 
 Para conseguir criar *hashes* diferentes com o mesmo bloco, os mineradores podem alterar o campo *nonce* arbitrariamente para criarem *hashes* completamente diferentes do mesmo bloco. Então, para um minerador provar que alcançou o resultado esperado pela rede basta que apresente o bloco com todos seus elementos incluindo este *nonce* para que qualquer um possa verificar a validade deste *hash* e da validade das transações contidas naquele bloco. No entanto, um valor de 32 *bytes* com suas 4 bilhões de possibilidades diferentes já não é suficiente para um *proof-of-work* que desde 2011 já necessita de mais de 1 quadrilhão de *hashes* para ser resolvido por algum minerador, logo, os mineradores passaram a usar otimizações ao algoritmo de *proof-of-work* original para alterarem o *timestamp* em alguns segundos, a própria transação *coinbase* e a ordem ou composição da lista de transações. 
 
-Agora, para facilitar a nossa visualização do trabalho computacional despendido no *proof-of-work* podemos implementar um script em Python3 para minerar um bloco fácil e possível em uma uma CPU comum, o bloco genesis:
+Agora, para facilitar a nossa visualização do trabalho computacional despendido no *proof-of-work*, podemos implementar um script em Python3 para minerar um bloco razoavelmente fácil para uma CPU comum, o bloco 1 após logo após o bloco gênesis. Não utilizarei o próprio bloco gênesis para o exemplo para podermos ver um bloco comum como outros, já que o gênesis é um caso especial e não tem referência ao bloco anterior. Este exemplo é bastante ineficiente para a tarefa e é muito mais útil para entendermos melhor o processo por meio de visualização, no entanto ele pode ser alterado para outros blocos como quiser:
 
 ```
-[ placeholder ]
+#!/usr/bin/env python3
+import hashlib
+import struct
+import codecs
+import time
+
+# versao para o bloco
+version = 1
+# o bloco anteiror (aqui, o bloco genesis)
+prev_block = "000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f"
+# a raiz de merkle formada das transacoes... nao estamos formando a nossa;
+# apenas pegamos a formada no bloco original
+merkle_root = "0e3e2357e806b6cdb1f70b54c3a3a17b6714ee1f0e68bebb44a74b1efd512098"
+start_time = int(time.time())
+bits = 486604799
+p = ''
+
+# calculando a string do alvo para checarmos
+exp = bits >> 24
+mant = bits & 0xffffff
+target = mant * (1 << (8 * (exp - 3)))
+target_hexstr = '%064x' % target
+target_str = codecs.decode(target_hexstr, 'hex')
+nonce = 100000000
+
+# apenas printando algumas informacoes sobre o bloco, bloco anterior e alvo
+print("Hash do bloco anterior:", prev_block)
+print("Raiz de Merkle:", merkle_root)
+print("Alvo atual (hex):", target_hexstr)
+print()
+
+print("Iniciando mineração...")
+while True:
+    nonce += 1
+    # este e o cabecalho do bloco
+    header = (struct.pack('<L', version) +
+              codecs.decode(prev_block, 'hex')[::-1] +
+              codecs.decode(merkle_root, 'hex')[::-1] +
+              struct.pack('<LLL', start_time, bits, nonce))
+
+    # passando o cabecalho na shasha; shasha = sha256(sha256().digest())
+    blockhash = hashlib.sha256(hashlib.sha256(header).digest()).digest()
+    blockhash_hex = codecs.encode(blockhash[::-1], 'hex')
+
+    # printando a cada hash com um 0 a mais conseguido
+    if blockhash_hex.startswith(p.encode('utf-8')):
+        print('\nnonce:', nonce,
+              '\nblockhash (hex):', blockhash_hex.decode('utf-8'),
+              '\ntempo corrido: %.2f segundos' % (time.time() - start_time),
+              '\nnumero de zeros no inicio do hash:', len(p))
+        p += '0'
+
+    # se o hash do bloco for menor ou igual ao target, finalizamos
+    if blockhash[::-1] <= target_str:
+        print("Sucesso!")
+        print("Bloco minerado em %d segundos." % (time.time() - start_time))
+        break
 ```
 
-E, para finalizar, podemos ver uma implementação simplificada do algoritmo de *proof-of-work* para visualizarmos a progressão dos números com a dificuldade em *bits* aumentando progressivamente:
+No *output* deste último programa, podemos ver a progressão do esforço computacional até conseguirmos minerar o bloco... o que levou algum tempo:
 
 ```
+
+```
+
+Como pode ver pelo *output* com um computador pessoal, levamos um tempo considerável para minerar este bloco; no total * segundos.
+
+E, para finalizarmos esta parte, podemos ver uma implementação simplificada do algoritmo de *proof-of-work* para visualizarmos a progressão dos números com a dificuldade em *bits* aumentando progressivamente:
+
+```
+#!/usr/bin/env python3
 import hashlib
 import time
 
@@ -175,7 +241,7 @@ if __name__ == '__main__':
         print("\n")
 ```
 
-Rodando este código, podemos observar o aumento da dificuldade em *bits* que representa o número de 0's ao início do valor alvo e observar quanto tempo nosso computador demora para achar uma solução em cada dificultade. Logo vemos que o tempo cresce de forma exponencial - com espaço para alguma sorte - como neste output em meu computador:
+Rodando este código, podemos observar o aumento da dificuldade em *bits* que representa o número de 0's ao início do valor alvo e observar quanto tempo nosso computador demora para achar uma solução em cada dificuldade. Logo vemos que o tempo aumenta de bastante - com espaço para alguma sorte - de acordo com o aumento do número que o alvo vai ficando menor (com mais 0's ao início) como neste output em um computador pessoal:
 
 ```
 Dificuldade: 2 (1 bits)

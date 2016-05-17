@@ -17,7 +17,7 @@ Para a geração segura de uma chave privada, primeiro precisamos de uma fonte s
 Em Python, podemos utilizar o ```os.urandom``` que coleta *bytes* a partir do ```/dev/urandom``` em sistema UNIX e ```cryptGenRandom()``` no Windows para geração da chave privada em *bytes*:
 
 ```
-import os
+>>> import os
 
 >>> privkey = os.urandom(32)
 >>> print(privkey)
@@ -43,6 +43,7 @@ Agora temos 32 *bytes* (ou 256 *bits*) coletados. Certamente nenhum dos formatos
 Então, vamos pegar a chave privada que criamos e transformar ela para o formato WIF. Ao finalizarmos, como teste do resultado, pegue a chave no formato WIF e importe ela em algum *software* de carteira e verá que a sua carteira criará endereços a partir desta chave privada normalmente. Aqui está uma forma como podemos transformar a chave privada que obtivemos acima para o formato WIF:
 
 ```
+#!/usr/bin/env python3
 import hashlib
 from base58 import b58encode
 
@@ -124,6 +125,8 @@ Sim, os números precisam ser gigantes para que este tipo de esquema criptográf
 A nossa chave pública, então, será o ponto gerado a partir da multiplicação da chave privada por G (```privkey * (Gx, Gy)```). Assim, temos que implementar uma multiplicação escalar para multiplicarmos  a ```privkey``` como ```int``` pelo vetor G implementado como um ```set```. Vamos abstrair esta operação em quatro funções: uma para calcular a inversa modular de ```x (mod p)```, uma para caluclar o dobro de um ponto - ou seja, a soma de um ponto por ele mesmo -, mais uma para adicionar um ponto a outro ponto qualquer e uma outra função para multiplicar um ponto por valores arbitrários (no caso, a chave privada):
 
 ```
+#!/usr/bin/env python3
+
 # primeiro vamos definir o "p" da fórmula usada no bitcoin "y^2 == x^3 + 7 (mod p)"
 p = 2**256 - 2**32 - 977
 
@@ -195,13 +198,13 @@ def point_mul(point, a, p):
 Agora utilizamos estas funções com os valores que temos da ```privkey``` e as coordenadas de G escritas em hexadecimal em ```int```:
 
 ```
-privkey = 0xe87e8404367368d0494480916d2580be6efcdf67894aebfcdf7cc3056863fb9a
-g_x = 0x79BE667EF9DCBBAC55A06295CE870B07029BFCDB2DCE28D959F2815B16F81798
-g_y = 0x483ADA7726A3C4655DA4FBFC0E1108A8FD17B448A68554199C47D08FFB10D4B8
-g = (g_x, g_y)
+>>> privkey = 0xe87e8404367368d0494480916d2580be6efcdf67894aebfcdf7cc3056863fb9a
+>>> g_x = 0x79BE667EF9DCBBAC55A06295CE870B07029BFCDB2DCE28D959F2815B16F81798
+>>> g_y = 0x483ADA7726A3C4655DA4FBFC0E1108A8FD17B448A68554199C47D08FFB10D4B8
+>>> g = (g_x, g_y)
 
-pub_x, pub_y = point_mul(g, privkey, p)
-print("x: %x, y: %x" % (pub_x, pub_y))
+>>> pub_x, pub_y = point_mul(g, privkey, p)
+>>> print("x: %x, y: %x" % (pub_x, pub_y))
 # Com os valores acima, print deve imprimir as coordenadas da nossa chave pública na curva que é:
 # 273f9c55a1c8976f87032aade62b794df31e64327386b403d7438c735b2f7c89, 9848db72f0b79646364e508d0f591d3a80541f8138f44722ada5220608f79805
 ```
