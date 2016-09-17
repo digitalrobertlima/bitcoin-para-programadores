@@ -1,6 +1,6 @@
 # Bitcoin para Programadores
 
-*Este livro em formato digital tem a primeira versão escrita por [Marco Agner](http://agner.io) como parte do projeto [Blockchain Hub](https://blockchainhub.com.br) realizado pelo [Instituto de Tecnologia e Sociedade do Rio de Janeiro (ITS Rio)](http://itsrio.org) e coordenado por Gabriel Aleixo.*
+*Este livro em formato digital tem a primeira versão escrita por [Marco Agner](http://agner.io) ([TXPlab](https://txplab.com)) como parte do projeto [Blockchain Hub](https://blockchainhub.com.br) realizado pelo [Instituto de Tecnologia e Sociedade do Rio de Janeiro (ITS Rio)](http://itsrio.org) e coordenado por Gabriel Aleixo.*
 
 ## Sobre o Conteúdo
 
@@ -10,9 +10,9 @@ Este material tem o objetivo de introduzir programadores com interesse nascente 
 
 A linguagem de programação utilizada nos exemplos de implementação nesta primeira versão é [Python 3](http://python.org) devido à sua sintaxe de fácil compreensão mesmo para programadores sem experiência na linguagem e a disposição de ótimas bibliotecas para abstração de todo conhecimento que não é especificamente necessário para o conteúdo apresentado, fazendo com que o material atinja o objetivo de capacitar o maior número de pessoas com os mesmos recursos.
 
-Tudo o que você precisa para tirar máximo proveito do material apresentado é ter alguma experiência na arte da programação de computadores, exposição ao paradigma de orientação a objetos e interesse por esta tecnologia revolucionária.
+Tudo o que você precisa para tirar máximo proveito do material apresentado é ter alguma experiência na arte da programação de computadores, exposição ao paradigma de orientação a objetos e interesse por esta tecnologia revolucionária. No entanto, em razão do caráter introdutório do conteúdo, muitas pessoas sem experiência em programação poderão tirar bastante proveito do material.
 
-Que este possa ser apenas o início de sua jornada numa tecnologia que importa.
+Que este possa ser apenas o início de sua jornada numa tecnologia que realmente importa.
 
 ## Sumário
 
