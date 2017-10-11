@@ -1,6 +1,6 @@
 # Bitcoin para Programadores
 
-*Este livro em formato digital tem a primeira versão escrita por [Marco Agner](http://www.marcoagner.org) ([txplab](https://txplab.com)) como parte do projeto [Blockchain Hub](https://blockchainhub.com.br) realizado pelo [Instituto de Tecnologia e Sociedade do Rio de Janeiro (ITS Rio)](http://itsrio.org) e coordenado por Gabriel Aleixo.*
+*Este livro em formato digital foi escrito por [Marco Agner](https://www.marcoagner.org).*
 
 ## Sobre o Conteúdo
 
