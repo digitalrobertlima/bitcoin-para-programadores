@@ -7,3 +7,4 @@
 * [Rede P2P](rede-p2p.md)
 * [Blockchain](blockchain.md)
 * [Mineração](mineracao.md)
+* [Errata](errata.md)
