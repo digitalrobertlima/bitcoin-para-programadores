@@ -1,6 +1,6 @@
 # Bitcoin para Programadores
 
-*Este livro em formato digital foi escrito por [Marco Agner](https://www.marcoagner.org).*
+*Este livro em formato digital foi escrito por [Marco Agner](https://www.marcoagner.org) e faz parte de um projeto em conjunto com ITS Rio.*
 
 ## Sobre o Conteúdo
 
