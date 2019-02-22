@@ -1,7 +1,7 @@
 # Bitcoin para Programadores
 
 *Este livro em formato digital foi escrito por [Marco Agner](https://www.marcoagner.org) e faz parte de um projeto em conjunto com ITS Rio.*
-*O código-fonte deste livro está em: [https://github.com/lxparallel/bitcoin-para-programadores](https://github.com/lxparallel/bitcoin-para-programadores).*
+*O código-fonte deste livro está em: [https://github.com/marcoagner/bitcoin-para-programadores](https://github.com/marcoagner/bitcoin-para-programadores).*
 
 ## Sobre o Conteúdo
 
