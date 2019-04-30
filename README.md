@@ -1,9 +1,11 @@
 # Bitcoin para Programadores
 
-*Este livro em formato digital foi escrito por [Marco Agner](https://www.marcoagner.org) e faz parte de um projeto em conjunto com ITS Rio.*
+*Este livro em formato digital foi escrito por [Marco Agner](https://www.marcoagner.org) e faz parte do material educativo de uma série de cursos ministrados em conjunto com o ITS Rio.*
 *O código-fonte deste livro está em: [https://github.com/marcoagner/bitcoin-para-programadores](https://github.com/marcoagner/bitcoin-para-programadores).*
 
 ## Sobre o Conteúdo
+
+>Atenção: este conteúdo foi escrito pela primeira vez em 2016, quando beneficiou muitas pessoas em suas jornadas no Bitcoin e tecnologias relacionadas, e não sofreu grandes alterações desde então. Felizmente, devido ao meu proposital foco em fundamentos básicos dos primitivos e tecnologias aqui apresentados, grande parte do material tem um tempo de vida útil longo ou, para efeitos práticos, atemporal. No entanto, desde 2016, muitos avanços fundamentais ocorreram no Bitcoin e meu entendimento do novo e do antigo, certamente, se aprofundou significativamente. Isto significa que, apesar de ainda confiar que há valor neste conteúdo a ser minerado por quem deseja iniciar no ecossistema desta tecnologia, o material poderia se beneficiar muito de sua atualização e extensão com o objetivo de refletir a realidade atual. Caso ache partes específicas e pontuais que possam ser renovadas ou corrigidas, entre em contato comigo ou contribua diretamente para o código-fonte deste livro pelo repositório no GitHub. E, caso tenha o interesse em apoiar ou consumir maiores e mais profundas revisões, renovações, e extensões do conteúdo, esteja livre para entrar em contato comigo para que a viabilidade de novos esforços neste sentido possam continuar a ser consideradas. Muito obrigado.
 
 Tornar-se apto a desenvolver aplicações Bitcoin de forma segura e consciente requer o entendimento de um grupo peculiar de assuntos, incluindo - sem limitar - *Network*, Criptografia, Sistemas Distribuídos, etc. E, tão importante quanto assuntos exatos, estão assuntos humanos para que possamos ter a visão de como sistemas podem criar incentivos para que atores humanos ajam de uma forma ou de outra, ou como uma aplicação pode se tornar mais segura utilizando a linguagem correta.
 
