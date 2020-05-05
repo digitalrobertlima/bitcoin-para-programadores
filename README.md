@@ -2,6 +2,8 @@
 
 **PDF Download: https://github.com/marcoagner/bitcoin-para-programadores/releases/tag/v1.1-pdf**
 
+![readme cover](cover_readme.jpg)
+
 *Este livro em formato digital foi escrito por [Marco Agner](https://www.marcoagner.org) e faz parte do material educativo de uma série de cursos ministrados em conjunto com o ITS Rio.*
 *O código-fonte deste livro está em: [https://github.com/marcoagner/bitcoin-para-programadores](https://github.com/marcoagner/bitcoin-para-programadores).*
 
