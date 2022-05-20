@@ -11,7 +11,7 @@ Em tradução livre do repositório da principal implementação atualmente ([Bi
 
 ### Indo um Pouco Além...
 
-Bitcoin é a união de tecnologias e abstracões que possibilitam que o consenso entre atores não necessariamente conhecidos possa ser alcançado de forma descentralizada sem que a confiaça tenha que ser depositada em um ponto de controle central ou que a segurança rede esteja sujeita à um único ponto de falha. Estas tecnologias em conjunto formam as bases para a existência de uma moeda digital descentralizada e para qualquer outro caso de uso que possamos abstrair para um modelo baseado em consenso - como contratos - de forma independente de autoridades centrais como bancos ou governos.
+Bitcoin é a união de tecnologias e abstracões que possibilitam que o consenso entre atores não necessariamente conhecidos possa ser alcançado de forma descentralizada sem que a confiaça tenha que ser depositada em um ponto de controle central ou que a segurança da rede esteja sujeita à um único ponto de falha. Estas tecnologias em conjunto formam as bases para a existência de uma moeda digital descentralizada e para qualquer outro caso de uso que possamos abstrair para um modelo baseado em consenso - como contratos - de forma independente de autoridades centrais como bancos ou governos.
 
 E, é importante reparar que o mesmo termo "**B**itcoin" com "B" maiúsculo é comumente utilizado para designar a tecnologia como um todo, a rede P2P Bitcoin ou o protocolo Bitcoin enquanto **b**itcoin(s) com "b" minúsculo é utilizado para designar a unidade de conta usada na rede.
 
